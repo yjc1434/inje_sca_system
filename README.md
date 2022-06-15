@@ -1,1 +1,5 @@
-# inje_sca_system
+# 인제대학교 동아리연합회 정보시스템
+# INJE UNIV. STUDENT CIRCLE INFORMATION ASSOCIATION
+
+# Web : Node.JS
+# DB : MySQL
