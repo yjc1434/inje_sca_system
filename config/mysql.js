@@ -13,10 +13,16 @@ const option = {
 var pool = mysql.createPool(option);
 
 function getConnection(callback) {
-    pool.getConnection(function(err,conn) {
-        if (!err) callback(conn);
-        else console.log(err);
-    });
+    try {
+        pool.getConnection(function(err,conn) {
+            if (!err) callback(conn);
+            else console.log(err);
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
+    
 };
 
 module.exports = getConnection;

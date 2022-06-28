@@ -149,3 +149,25 @@ footer > .logo {
 .btn_return:hover {
     background-color: rgb(179, 179, 179);
 }
+
+.month {
+    background-image: url('/static/resource/month.svg');
+    background-repeat: no-repeat;
+    background-size: 15px;
+    background-position: right .75rem center;
+    box-sizing: border-box;
+}
+.year {
+    background-image: url('/static/resource/year.svg');
+    background-repeat: no-repeat;
+    background-size: 15px;
+    background-position: right .75rem center;
+    box-sizing: border-box;
+}
+.day {
+    background-image: url('/static/resource/day.svg');
+    background-repeat: no-repeat;
+    background-size: 15px;
+    background-position: right .75rem center;
+    box-sizing: border-box;
+}

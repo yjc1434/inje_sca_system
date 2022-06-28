@@ -22,18 +22,18 @@
         <div class="container my-5">
             <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                 <div class="d-block m-auto">
-                    <h1 class="text-center mb-3">관리자 로그인</h1>
+                    <h1 class="text-center mb-3">투표 결과 확인</h1>
                     <div class="line my-5"></div>
                     <div class="row align-items-center login_card">
                         <div class="col-12 col-md-3 text-center">
-                            <label for="_password" class="col-form-label mb-3">관리자 비밀번호</label>
+                            <label for="_password" class="col-form-label mb-3">암호 키</label>
                         </div>
                         <div class="col-12 col-md-6">
                             <input type="password" class="form-control mb-3" id="_password" name="_password"
-                                placeholder="비밀번호 입력">
+                                placeholder="암호 키 입력">
                         </div>
                         <div class="col-12 col-md-3">
-                            <button onclick="checkPassword()" class="btn btn-primary w-100 mb-3">로그인</button>
+                            <button onclick="checkAuthKey()" class="btn btn-primary w-100 mb-3">확인</button>
                         </div>
                         <div class="w-100 mb-3"></div>
                         <div class="text-center text-danger mb-3 invisible" name="label" style="padding: 0px;">오류메시지 출력란
@@ -57,10 +57,36 @@
         document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = '비밀번호가 일치하지 않습니다!';
     }
-    else if (data == 'none') {
-        document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
-        document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
-        document.getElementsByName('label')[0].innerText = '비밀번호가 일치하지 않습니다!';
+</script>
+<script>
+    function checkAuthKey() {
+        var _password = document.getElementsByName('_password')[0].value;
+        document.getElementsByName('_password')[0].value = "";
+        if (_password == "") {
+            document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+            document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
+            document.getElementsByName('label')[0].innerText = '암호키를 입력해주세요!';
+        }
+        else {
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/admin/vote/result/open');
+    
+            var input1 = document.createElement('input');
+            input1.setAttribute('type', 'password');
+            input1.setAttribute('name', '_password');
+            input1.setAttribute('value', _password);
+
+            var input2 = document.createElement('input');
+            input2.setAttribute('type', 'password');
+            input2.setAttribute('name', 'vote_id');
+            input2.setAttribute('value', `<%=vote_id%>`);
+
+            form.appendChild(input1);
+            form.appendChild(input2);
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
 </script>
 

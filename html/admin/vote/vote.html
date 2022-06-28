@@ -45,7 +45,7 @@
                                         <p class="card-text">
                                             <%= votedata_1[i].vote_subject %>
                                         </p>
-                                        <a href="#" class="btn btn-primary">투표 종료</a>
+                                        <button onclick=<%="vote_end("+votedata_1[i].vote_id+")"%> class="btn btn-primary">투표 종료</button>
                                     </div>
                                     <% if (votedata_1.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -60,7 +60,7 @@
                         <button
                             onclick="location.href='/admin/vote/add'"
                             class="btn btn-primary w-100 mb-2">투표 추가</button>
-                        <button onclick="location.href='/admin/vote'" class="btn btn_return w-100 mb-5">뒤로가기</button>
+                        <button onclick="location.href='/admin'" class="btn btn_return w-100 mb-5">뒤로가기</button>
                         <div class="card mb-3 vote_card">
                             <div class="card-header">
                                 진행 예정 투표
@@ -74,8 +74,12 @@
                                         <p class="card-text">
                                             <%= votedata_0[i].vote_subject %>
                                         </p>
-                                        <a href="#" class="btn btn-primary">투표 시작</a>
-                                        <a href="#" class="btn btn-primary">투표 삭제</a>
+                                        <button
+                                            onclick=<%="vote_start("+votedata_0[i].vote_id+")"%>
+                                            class="btn btn-primary">투표 시작</button>
+                                        <button
+                                            onclick=<%="vote_delete("+votedata_0[i].vote_id+")"%>
+                                            class="btn btn-primary">투표 삭제</button>
                                     </div>
                                     <% if (votedata_0.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -100,8 +104,12 @@
                                         <p class="card-text">
                                             <%= votedata_2[i].vote_subject %>
                                         </p>
-                                        <a href="#" class="btn btn-primary">결과 보기</a>
-                                        <a href="#" class="btn btn-primary">투표 삭제</a>
+                                        <button
+                                            onclick=<%="vote_open("+votedata_2[i].vote_id+")"%>
+                                            class="btn btn-primary">결과</button>
+                                            <button
+                                            onclick=<%="vote_delete("+votedata_2[i].vote_id+")"%>
+                                            class="btn btn-primary">투표 삭제</button>
                                     </div>
                                     <% if (votedata_2.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -123,6 +131,49 @@
             </footer>
         </div>
     </body>
-    <script></script>
+    <script>
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
 
+        var input1 = document.createElement('input');
+        input1.setAttribute('type', 'hidden');
+        input1.setAttribute('name', 'vote_id'); 
+
+        function func_run() {
+            form.appendChild(input1);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function vote_start(vote_id) {
+            if (confirm('투표를 시작하시겠습니까?')) {
+                form.setAttribute('action', '/admin/vote/start');
+                input1.setAttribute('value', vote_id);
+                func_run();
+            }
+        }
+
+        function vote_delete(vote_id) {
+            if (confirm('투표를 삭제하시겠습니까?')) {
+                form.setAttribute('action', '/admin/vote/delete');
+                input1.setAttribute('value', vote_id);
+                func_run();
+            }
+        }
+
+        function vote_end(vote_id) {
+            if (confirm('투표를 종료하시겠습니까?')) {
+                form.setAttribute('action', '/admin/vote/end');
+                input1.setAttribute('value', vote_id);
+                func_run();
+            }
+        }
+        function vote_open(vote_id) {
+            if (confirm('결과를 확인하시겠습니까?')) {
+                form.setAttribute('action', '/admin/vote/result');
+                input1.setAttribute('value', vote_id);
+                func_run();
+            }
+        }
+    </script>
 </html>

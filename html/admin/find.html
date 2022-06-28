@@ -58,6 +58,7 @@
     let data = `<%=status%>`;
     if (data == 'fail') {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('_snum')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = 'DB에 존재하지 않습니다!';
     }
     else if (data == 'same') {

@@ -25,17 +25,16 @@
                     <div class="line my-5"></div>
                     <div class="card mb-5 vote_card text-center">
                         <div class="card-header">
-                            <%= votedata.votename %>
+                            <%= votename %>
                         </div>
                         <div class="card-body">
-                            <p class="card-text"><%= votedata.votesubject %></p>
                             <div class="line mx-auto my-3" style="width: 80%;"></div>
-                            <button name='v_btn1' onclick="voteRun(this)" class="btn btn-primary w-50 mb-2">찬성</button>
-                            <button name='v_btn2' onclick="voteRun(this)" class="btn btn-danger w-50 mb-2">반대</button>
-                            <button name='v_btn3' onclick="voteRun(this)" class="btn btn_return w-50 mb-2">기권</button>
+                            <button name='v_btn1' onclick="vote_agree()" class="btn btn-primary w-50 mb-2">찬성</button>
+                            <button name='v_btn2' onclick="vote_disagree()" class="btn btn-danger w-50 mb-2">반대</button>
+                            <button name='v_btn3' onclick="vote_none()" class="btn btn_return w-50 mb-2">기권</button>
                         </div>
                     </div>
-                    <button onclick="location.href='/vote/list'" class="btn btn-primary w-100 mb-3">뒤로가기</button>
+                    <button onclick="location.href='/'" class="btn btn-primary w-100 mb-3">뒤로가기</button>
                 </div>
             </div>
         </div>
@@ -48,43 +47,101 @@
     </div>
 </body>
 <script>
-    function voteRun(target) {
-        var id = `<%= votedata.voteid %>`;
-
+    function vote_agree() {
         var form = document.createElement('form');
         form.setAttribute('method', 'post');
         form.setAttribute('action', '/vote/run/commit');    
-
+        
         var input1 = document.createElement('input');
         input1.setAttribute('type', 'hidden');
         input1.setAttribute('name', 'voteid');
-        input1.setAttribute('value',`<%=votedata.voteid%>`);
-        
+        input1.setAttribute('value', `<%= voteid %>`);
+
         var input2 = document.createElement('input');
         input2.setAttribute('type', 'hidden');
-        input2.setAttribute('name', 'votedata');
-        
+        input2.setAttribute('name', 'votevalue');
+        input2.setAttribute('value', 'agree');
+
         var input3 = document.createElement('input');
         input3.setAttribute('type', 'hidden');
         input3.setAttribute('name', 'authcode');
-        input3.setAttribute('value',`<%=authcode%>`);
+        input3.setAttribute('value', `<%= authcode %>`);
 
-        if (target.name == 'v_btn1') { //찬성
-            input2.setAttribute('value', 'agree');
-            alert("투표에 찬성하셨습니다.");
-        }
-        else if (target.name == 'v_btn2') { //반대
-            input2.setAttribute('value', 'disagree');
-            alert("투표에 반대하셨습니다.");
-        }
-        else if (target.name == 'v_btn3') { //기권
-            input2.setAttribute('value', 'none');
-            alert("투표에 기권하셨습니다.");
-        }
+        var input4 = document.createElement('input');
+        input4.setAttribute('type', 'hidden');
+        input4.setAttribute('name', 'votekey');
+        input4.setAttribute('value', `<%= votekey %>`);
 
         form.appendChild(input1);
         form.appendChild(input2);
         form.appendChild(input3);
+        form.appendChild(input4);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    function vote_disagree() {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/vote/run/commit');    
+        
+        var input1 = document.createElement('input');
+        input1.setAttribute('type', 'hidden');
+        input1.setAttribute('name', 'voteid');
+        input1.setAttribute('value', `<%= voteid %>`);
+
+        var input2 = document.createElement('input');
+        input2.setAttribute('type', 'hidden');
+        input2.setAttribute('name', 'votevalue');
+        input2.setAttribute('value', 'disagree');
+
+        var input3 = document.createElement('input');
+        input3.setAttribute('type', 'hidden');
+        input3.setAttribute('name', 'authcode');
+        input3.setAttribute('value', `<%= authcode %>`);
+
+        var input4 = document.createElement('input');
+        input4.setAttribute('type', 'hidden');
+        input4.setAttribute('name', 'votekey');
+        input4.setAttribute('value', `<%= votekey %>`);
+
+        form.appendChild(input1);
+        form.appendChild(input2);
+        form.appendChild(input3);
+        form.appendChild(input4);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    function vote_none() {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/vote/run/commit');    
+        
+        var input1 = document.createElement('input');
+        input1.setAttribute('type', 'hidden');
+        input1.setAttribute('name', 'voteid');
+        input1.setAttribute('value', `<%= voteid %>`);
+
+        var input2 = document.createElement('input');
+        input2.setAttribute('type', 'hidden');
+        input2.setAttribute('name', 'votevalue');
+        input2.setAttribute('value', 'none');
+
+        var input3 = document.createElement('input');
+        input3.setAttribute('type', 'hidden');
+        input3.setAttribute('name', 'authcode');
+        input3.setAttribute('value', `<%= authcode %>`);
+
+        var input4 = document.createElement('input');
+        input4.setAttribute('type', 'hidden');
+        input4.setAttribute('name', 'votekey');
+        input4.setAttribute('value', `<%= votekey %>`);
+
+        form.appendChild(input1);
+        form.appendChild(input2);
+        form.appendChild(input3);
+        form.appendChild(input4);
 
         document.body.appendChild(form);
         form.submit();

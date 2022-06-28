@@ -3,6 +3,7 @@ function checkPassword() {
     document.getElementsByName('_password')[0].value = "";
     if (_password == "") {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = '비밀번호를 입력해주세요!';
     }
     else {
@@ -25,6 +26,7 @@ function checkSuperPassword() {
     document.getElementsByName('_password')[0].value = "";
     if (_password == "") {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = '비밀번호를 입력해주세요!';
     }
     else {
@@ -47,6 +49,7 @@ function checkVotePassword() {
     document.getElementsByName('_password')[0].value = "";
     if (_password == "") {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = '인증코드를 입력해주세요!';
     }
     else {
@@ -69,6 +72,7 @@ function findStudent() {
     document.getElementsByName('_snum')[0].value = "";
     if (_snum == "") {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('_snum')[0].className = 'form-control mb-3 is-invalid';
         document.getElementsByName('label')[0].innerText = '학번을 입력해주세요!';
     }
     else {

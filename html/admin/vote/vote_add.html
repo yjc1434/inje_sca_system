@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>인제대학교 동아리연합회</title>
+    <link rel="stylesheet" href="/static/css/inje-settings.css">
+    <script type = "text/javascript" src = "/static/js/inje-script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
+</head>
+<body> 
+    <div class="container-fluid px-0">
+        <header class="p-4 mb-4 border-bottom text-center">
+            <a href="/">
+                <img src="/static/resource/sca_system_logo.svg" style="min-height:20px;max-height:50px;" alt="">
+            </a>
+        </header>
+        <div class="container my-5">
+            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <h1 class="text-center mb-3">투표 추가</h1>
+                    <div class="line my-5"></div>
+                    <div class="row align-items-center password_card">
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="_title" class="col-form-label mb-3">제목</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <input type="text" class="form-control mb-3" id="_title" name="_title"
+                                    placeholder="제목 입력">
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md"><label for="_subject" class="col-form-label mb-3">설명</label></div>
+                            <div class="col-12 col-md-9">
+                                <textarea type="text" class="form-control mb-3" id="_subject" name="_subject"
+                                placeholder="설명 입력" style="resize: none; height: 100px"></textarea>
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="_endtime" class="col-form-label mb-3">종료일자</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="row mb-3">
+                                    <div class="col-4 pe-1">
+                                        <input type="text" class="form-control" id="_endday_yy" name="_endday_yy"
+                                        placeholder="년(4자리)">
+                                    </div>
+                                    <div class="col-4 px-2">
+                                        <input type="text" class="form-control" id="_endday_mm" name="_endday_mm"
+                                        placeholder="월">
+                                    </div>
+                                    <div class="col-4 ps-1">
+                                        <input type="text" class="form-control" id="_endday_dd" name="_endday_dd"
+                                        placeholder="일">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="_endtime" class="col-form-label mb-3">종료시간</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="row mb-3">
+                                    <div class="col-4 pe-1">
+                                        <select class="form-select" id="_endtime_apm">
+                                            <option value="am">오전</option>
+                                            <option value="pn">오후</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 px-2">
+                                        <select type="text" class="form-select" id="_endtime_hh" name="_endtime_hh" placeholder="시">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="0" selected>12</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 ps-1">
+                                        <select type="text" class="form-select" id="_endtime_mm" name="_endtime_mm" placeholder="분">
+                                            <option value="0">00</option>
+                                            <option value="5">05</option>
+                                            <option value="10">10</option>
+                                            <option value="00">15</option>
+                                            <option value="20">20</option>
+                                            <option value="00">25</option>
+                                            <option value="30">30</option>
+                                            <option value="00">35</option>
+                                            <option value="40">40</option>
+                                            <option value="00">45</option>
+                                            <option value="50">50</option>
+                                            <option value="00">55</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="_endtime" class="col-form-label mb-3">유권자 목록</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="input-group mb-3">
+                                    <input type="file" class="form-control" id="_list" name="_list" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    <button class="btn btn-outline-secondary" type="button" id="_listbtn" onclick="readExcel()">열기</button>
+                                  </div>
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="_rowname" class="col-form-label mb-3">인증코드 셀</label>
+                            </div>
+                            <div class="col-12 col-md-9 mb-3">
+                                <select class="form-select" id="_rowname">
+                                    <option value="select">파일을 먼저 선택해주세요.</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-3 text-center-md">
+                                <label for="vote_auth" class="col-form-label mb-3">암호키</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="input-group">
+                                    <input type="text" class="form-control mb-3" id="_keys" name="_keys"
+                                    placeholder="암호 키" value="<%=keys%>" aria-describedby="button-addon" readonly>
+                                <button class="btn btn-primary mb-3" type="button" onclick="copyCode()" id="button-addon">복사</button>
+                                </div>
+                            </div>
+                            <div class="w-100 mb-5"></div>
+                            <div class="col-12 col-md-6">
+                                <button onclick="voteAdd()" class="btn btn-primary w-100 mb-3">완료</button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button class="btn btn-gray w-100 mb-3" onclick="location.href='/admin/menu'"
+                                    style="background-color: rgb(223, 223, 223);">뒤로가기</button>
+                            </div>
+                            <div class="w-100 mb-3"></div>
+                            <div class="text-center text-danger mb-3 invisible" name="label" style="padding: 0px;">오류메시지 출력란</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center p-5">
+            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+            <div class="mb-5"></div>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University
+                All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    let today = new Date();   
+
+    document.getElementById('_endday_yy').value = today.getFullYear(); // 년도
+    document.getElementById('_endday_mm').value = today.getMonth() + 1;  // 월
+    document.getElementById('_endday_dd').value = today.getDate();  // 날짜
+
+    function readExcel() {
+        let input = document.getElementById("_list");
+        let select = document.getElementById('_rowname');
+        let reader = new FileReader();
+
+        reader.onload = function () {
+            let data = reader.result;
+            let workBook = XLSX.read(data, { type: 'binary' });
+            sheetName = workBook.SheetNames[0];
+            firstSheet = workBook.Sheets[sheetName];
+            let rows = XLSX.utils.sheet_to_json(firstSheet);
+            select.innerHTML = ""
+            let option_select = document.createElement('option');
+            option_select.setAttribute('value','select');
+            option_select.innerText ='인증코드로 사용할 셀을 선택해주세요.';
+            select.appendChild(option_select);
+
+            let str = Object.keys(rows[0]).toString();
+            let strs = str.split(',');
+
+            for (let i = 0; i < strs.length; i++) {
+                let option = document.createElement('option');
+                option.setAttribute('value',strs[i]);
+                option.innerText = strs[i];
+                select.appendChild(option);
+            }
+
+            alert('파일을 불러왔습니다!');
+        };
+        reader.readAsBinaryString(input.files[0]);
+    }
+    function tct(str) {
+        if (str.length == 1) return "0" + str;
+        return str;
+    }
+
+    function date() {
+        var year = document.getElementById('_endday_yy').value;
+        var month = document.getElementById('_endday_mm').value;
+        var day = document.getElementById('_endday_dd').value;
+        var apm = document.getElementById('_endtime_apm').value;
+        var hour = document.getElementById('_endtime_hh').value;
+        var min = document.getElementById('_endtime_mm').value;
+        if (year.length == 4) {
+            if (month >= 1 && month <= 12) {
+                if (day >= 1 && day <= 31) {
+                    let dates = year + "-" + tct(month) + "-" + tct(day);
+                    if (apm == 'pm') hour += 12;
+                    dates += " " + tct(hour) + ":" + tct(min) + ":00";
+                    return new Date(dates);
+                }
+            }
+        }
+        else {
+            alert('입력 양식을 확인해주세요!');
+        }
+    }
+    function voteAdd() {
+        var name = document.getElementById('_title').value;
+        var sub = document.getElementById('_subject').value;
+        var key = document.getElementById('_keys').value;
+        var end = date();
+        var cellname = document.getElementById('_rowname').value;
+        var file = document.getElementById('_list');
+
+        if (name == '' || sub == '') {
+            alert('빈칸을 입력해주세요!');
+        }
+        else if (file == null) {
+            alert('인증코드 파일을 업로드해주세요!');
+        }
+        else {
+            console.log(end);
+
+            if(confirm("추가하시겠습니까?")) {
+                var form = document.createElement('form');
+                form.setAttribute('method', 'post');
+                form.setAttribute('action', '/admin/vote/add/commit');    
+                form.setAttribute('enctype','multipart/form-data')
+        
+                var input1 = document.createElement('input');
+                input1.setAttribute('type', 'hidden');
+                input1.setAttribute('name', 'vote_name');
+                input1.setAttribute('value', name);
+                
+                var input2 = document.createElement('input');
+                input2.setAttribute('type', 'hidden');
+                input2.setAttribute('name', 'vote_subject');
+                input2.setAttribute('value', sub);
+        
+                var input3 = document.createElement('input');
+                input3.setAttribute('type', 'hidden');
+                input3.setAttribute('name', 'vote_key');
+                input3.setAttribute('value', key);
+
+                var input4 = document.createElement('input');
+                input4.setAttribute('type', 'hidden');
+                input4.setAttribute('name', 'vote_endtime');
+                input4.setAttribute('value', end);
+
+                var input5 = document.createElement('input');
+                input5.setAttribute('type', 'hidden');
+                input5.setAttribute('name', 'vote_cellname');
+                input5.setAttribute('value', cellname);
+                
+                form.appendChild(input1);
+                form.appendChild(input2);
+                form.appendChild(input3);
+                form.appendChild(input4);
+                form.appendChild(input5);
+                form.appendChild(file);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+            else {
+                return
+            }
+        }
+    }
+    function copyCode() {
+        var keys = document.getElementById('_keys');
+        keys.select();
+        keys.setSelectionRange(0,9999);
+        document.execCommand("copy");
+        keys.setSelectionRange(0,0);
+        alert("복사되었습니다!");
+    }
+</script>
+</html>
