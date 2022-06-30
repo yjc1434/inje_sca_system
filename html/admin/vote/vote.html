@@ -45,7 +45,7 @@
                                         <p class="card-text">
                                             <%= votedata_1[i].vote_subject %>
                                         </p>
-                                        <button onclick=<%="vote_end("+votedata_1[i].vote_id+")"%> class="btn btn-primary">투표 종료</button>
+                                        <button onclick=<%="vote_end("+votedata_1[i].vote_id+")"%> class="btn btn-primary w-100">투표 종료</button>
                                     </div>
                                     <% if (votedata_1.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -76,10 +76,10 @@
                                         </p>
                                         <button
                                             onclick=<%="vote_start("+votedata_0[i].vote_id+")"%>
-                                            class="btn btn-primary">투표 시작</button>
+                                            class="btn btn-primary w-100">투표 시작</button>
                                         <button
                                             onclick=<%="vote_delete("+votedata_0[i].vote_id+")"%>
-                                            class="btn btn-primary">투표 삭제</button>
+                                            class="btn btn-primary w-100">투표 삭제</button>
                                     </div>
                                     <% if (votedata_0.length> 0) { %>
                                         <div class="line m-0"></div>

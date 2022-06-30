@@ -24,9 +24,7 @@
                 </a>
             </header>
             <div class="container my-5">
-                <div
-                    class="pp-5 mb-4 bg-light rounded-3 vertical-center"
-                    style="min-height:500px">
+                <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                     <div class="d-block m-auto">
                         <h1 class="text-center mb-3">투표 목록</h1>
                         <div class="line my-5"></div>
@@ -34,12 +32,76 @@
                             <div class="card-header text-center">
                                 진행 중인 투표
                             </div>
+                            <% function date(old_date){
+                                let date = old_date.toString().split(' ');
+                                let result = date[3] + "년 ";
+                                //월
+                                if (date[1] == 'Jan') {
+                                    result += "1월 ";
+                                } else if (date[1] == 'Feb') {
+                                    result += "2월 ";
+                                } else if (date[1] == 'Mar') {
+                                    result += "3월 ";
+                                } else if (date[1] == 'Apr') {
+                                    result += "4월 ";
+                                } else if (date[1] == 'May') {
+                                    result += "5월 ";
+                                } else if (date[1] == 'Jun') {
+                                    result += "6월 ";
+                                } else if (date[1] == 'Jul') {
+                                    result += "7월 ";
+                                } else if (date[1] == 'Aug') {
+                                    result += "8월 ";
+                                } else if (date[1] == 'Sep') {
+                                    result += "9월 ";
+                                } else if (date[1] == 'Oct') {
+                                    result += "10월 ";
+                                } else if (date[1] == 'Nov') {
+                                    result += "11월 ";
+                                } else if (date[1] == 'Dec') {
+                                    result += "12월 ";
+                                }
+                        
+                                result += date[2] + "일 ";
+                        
+                                //요일
+                                if (date[0] == 'Mon') {
+                                    result += "월요일";
+                                } else if (date[0] == 'Tue') {
+                                    result += "화요일";
+                                } else if (date[0] == 'Wed') {
+                                    result += "수요일";
+                                } else if (date[0] == 'Thu') {
+                                    result += "목요일";
+                                } else if (date[0] == 'Fri') {
+                                    result += "금요일";
+                                } else if (date[0] == 'Sat') {
+                                    result += "토요일";
+                                } else if (date[0] == 'sun') {
+                                    result += "일요일";
+                                }
+
+                                times = date[4].split(":");
+
+                                if (parseInt(times[0]) >= 12) { //오후
+                                    result += " 오후 ";
+                                    times[0] = (parseInt(times[0]) - 12).toString();
+                                    if (times[0] == '00') times[0] = ' 12';
+                                }
+                                else if (times[0] == '00') times[0] = ' 12';
+                                else {
+                                    result += " 오전 ";
+                                }
+                        
+                                result += times[0] +"시 " + times[1] + "분";
+                                return result;
+                            } %>
                             <% if (votedata.length > 0) { %>
                                 <% for (var i = 0; i < votedata.length; i++) { %>
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><%= votedata[i].vote_name %></h5>
                                         <p class="card-text"><%= votedata[i].vote_subject %></p>
-                                        <p class="card-text" vote_id="<%=votedata[i].id%>" vote_time="<%=votedata[i].vote_endtime%>"><%=votedata[i].vote_endtime%></p>
+                                        <p class="card-text" vote_id="<%=votedata[i].id%>" vote_time="<%=votedata[i].vote_endtime%>"><%= date(votedata[i].vote_endtime) %>까지</p>
                                     <% if (votedata[i].code_status == 0) { %>
                                         <button onclick=<%="vote("+votedata[i].vote_id+")"%> class="btn btn-primary w-100 mb-2">투표하기</button>  
                                     <% } else if (votedata[i].code_status == 1) { %>
