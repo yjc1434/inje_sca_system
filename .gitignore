@@ -5,3 +5,5 @@ html/vote_test
 vote_test.js
 temp
 *_old.*
+*.csv
+old_*

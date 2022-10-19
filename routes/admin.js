@@ -10,45 +10,37 @@ var randomKeys = require('../config/crypto').randomKeys;
 var multer = require('multer'); // 1
 var students = [];
 
-
-function getFormatDate(date){
-    var year = date.getFullYear();
-    var month = (1 + date.getMonth());
-    month = month > 10 ? month : '0' + month; // 10이 넘지 않으면 앞에 0을 붙인다
-    var day = date.getDate();
-    day = day > 10 ? day : '0' + day; // 10이 넘지 않으면 앞에 0을 붙인다
-    var hours = date.getHours();
-    hours = hours > 10 ? hours : '0' + hours; // 10이 넘지 않으면 앞에 0을 붙인다
-    var minutes = date.getMinutes();
-    minutes =  minutes > 10 ? minutes : '0' + minutes; // 10이 넘지 않으면 앞에 0을 붙인다
-    var seconds = date.getSeconds();
-    seconds = seconds > 10 ? seconds : '0' + seconds; // 10이 넘지 않으면 앞에 0을 붙인다
- 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} `
-}
 const upload = multer({dest:'./temp/upload'});
 
-router.get('/', function (request, response) { //관리자 로그인
-    if (request.session.isLogin == 2) {
-        response.redirect('/admin/menu');
-    }
-    else {
-        var htmlPage = fs.readFileSync('html/admin/login.html', 'utf8');
-        response.send(htmlPage);
-    }
-});
-
-router.get('/menu', function (request, response) { //관리자 메뉴
+router.get('/', function (request, response) {
     if (request.session.isLogin == 2) {
         var htmlPage = fs.readFileSync('html/admin/menu.html', 'utf8');
         response.send(htmlPage);
     }
     else {
-        response.redirect('/');
+        response.redirect('/admin/login');
     }
 });
 
-router.get('/vote', function (request, response) { //투표 관리
+router.get('/login', function (request, response) {
+    var htmlPage = fs.readFileSync('html/admin/login.html', 'utf8');
+    response.send(htmlPage);
+});
+
+router.post('/login/auth', function (request, response) { //관리자 로그인
+    var pw = request.body.password;
+    if (pw == '200101'){
+        request.session.isLogin = 2; //정보확인을 완료한 계정이라는 세션 정보
+        request.session.save(function () {
+            response.send('true');
+        });
+    }
+    else {
+        response.send('false');
+    }
+});
+
+router.get('/vote', function (request, response) {
     if (request.session.isLogin == 2) {
         getConnection(function (conn) {
             var queryString = `SELECT * FROM vote_list`;
@@ -102,6 +94,7 @@ router.post('/vote/add/commit', upload.single('_list'), function (request, respo
         var key = request.body.vote_key;
         var end = request.body.vote_endtime;
         var id;
+        var params = [];
         getConnection(function (conn) {
             conn.query(queryString, params, function (err,result) {
                 if (!err) {
@@ -111,16 +104,35 @@ router.post('/vote/add/commit', upload.single('_list'), function (request, respo
                     params = [id,name,subject,key,end,0,0,0,0];
                     conn.query(queryString, params, function (err, result) {
                         if (!err) {
-                            queryString = 'insert into users values (?,?,?,?)' //유권자 추가
+                            var insertQuery = 'insert into users (gname, name, password, vote_id, code_status) values ';
                             for (let i = 0; i < sheetdata.length; i++) {
+                                insertQuery += '("'
                                 let data = sheetdata[i];
-                                params = [data[request.body.vote_cellname],1,id,0];
-                                conn.query(queryString, params, function (err, result) {
-                                    if (err) return;
-                                });
+                                //insertQuery += data[request.body.vote_cellname]+'",'+1+','+id+','+'0),';
+                                insertQuery += data['소속']+'","'+data['동아리명']+'","'+data['비밀번호']+'","'+ id +'", "0"),';
                             }
-                            var htmlPage = fs.readFileSync('html/admin/vote/vote_update.html','utf8');
-                            response.send(ejs.render(htmlPage,{message : 'commit'}));
+                            insertQuery = insertQuery.substring(0,insertQuery.length - 1);
+                            conn.query(insertQuery,null,function(err,result) {
+                                if (err){
+                                    console.log(err);
+                                    return;
+                                }
+                                else {
+                                    conn.release();
+                                    var htmlPage = fs.readFileSync('html/admin/vote/vote_update.html','utf8');
+                                    response.send(ejs.render(htmlPage,{message : 'commit'}));
+                                }
+                            })
+                            // queryString = 'insert into users values (?,?,?,?)' //유권자 추가
+                            // for (let i = 0; i < sheetdata.length; i++) {
+                            //     let data = sheetdata[i];
+                            //     params = [data[request.body.vote_cellname],1,id,0];
+                            //     conn.query(queryString, params, function (err, result) {
+                            //         if (err) return;
+                            //     });
+                            // }
+                            // var htmlPage = fs.readFileSync('html/admin/vote/vote_update.html','utf8');
+                            // response.send(ejs.render(htmlPage,{message : 'commit'}));
                         }
                         else console.log(err);
                     });
@@ -160,10 +172,25 @@ router.post('/vote/end', function (request,response) {
             var queryString = `update vote_list set vote_status = ? where vote_id = ?`;
             params = ['2',id];
             conn.query(queryString, params, function (err, result) {
-                conn.release();
                 if (!err) {
+                //     getConnection(function (conn) {
+                //         var queryString = `delete from users where vote_id = ?`;
+                //         params = [id];
+                //         conn.query(queryString, params, function (err, result) {
+                //             conn.release();
+                //             if (!err) {
+                //                 var htmlPage = fs.readFileSync('html/admin/vote/vote_update.html','utf8');
+                //                 response.send(ejs.render(htmlPage,{message : 'end'}));
+                //             }
+                //             else {
+                //                 console.log(err);
+                //             }
+                //         });
+                //     });
+                // }  (1) 데이터베이스 다 날리기
+                    conn.release();
                     var htmlPage = fs.readFileSync('html/admin/vote/vote_update.html','utf8');
-                    response.send(ejs.render(htmlPage,{message : 'end'}));
+                    response.send(ejs.render(htmlPage,{message : 'end'})); //(2) 보존하기
                 }
                 else {
                     console.log(err);
@@ -242,13 +269,13 @@ router.post('/vote/result/open', function (request, response) { //개표
                 if (!err) {
                     var name = result[0].vote_name;
                     if (pw == result[0].vote_key) {
-                        var queryString = 'select vote_data from vote_data;';
+                        var queryString = 'select vote_data from vote_data where vote_id = ?;';
+                        var params = [id];
                         var agree = 0,
                             disagree = 0,
                             none = 0;
                         getConnection(function (conn) {
-                            conn.query(queryString, function (err, results) {
-                                console.log('conn');
+                            conn.query(queryString, params, function (err, results) {
                                 if (!err) {
                                     for (let i = 0; i < results.length; i++) {
                                         var data = decrypt(
@@ -295,119 +322,6 @@ router.post('/vote/result/open', function (request, response) { //개표
         });
     } else {
         console.log(err);
-    }
-});
-
-
-router.get('/list', function (request, response) { //관리자 북마크 보기
-    if (request.session.isLogin == 2) {
-        if (students.length > 0) {
-            var htmlPage = fs.readFileSync('html/admin/list.html', 'utf8');
-            response.send(ejs.render(htmlPage, { data: students }));
-        }
-        else {
-            var htmlPage = fs.readFileSync('html/admin/menu.html', 'utf8');
-            response.send(ejs.render(htmlPage, { status: 'nolist' }));
-        }
-    }
-    else {
-        response.redirect('/');
-    }
-});
-
-
-router.get('/find', function (request, response) { //관리자 학생 검색
-    if (request.session.isLogin == 2) {
-        var htmlPage = fs.readFileSync('html/admin/find.html', 'utf8');
-        response.send(htmlPage);
-    }
-    else {
-        response.redirect('/');
-    }
-});
-
-router.get('/result', function (request, response) { //관리자 학생 검색 결과
-    if (request.session.isLogin == 2) {
-        var htmlPage = fs.readFileSync('html/admin/result.html', 'utf8');
-        var _snum = request.query._snum;
-        var returnData = excel.filter(function (obj) {
-            if (obj['학번'] == _snum) {
-                return obj
-            }
-        });
-        if (returnData.length == 0) {
-            htmlPage = fs.readFileSync('html/admin/find.html', 'utf8');
-            response.send(ejs.render(htmlPage, { status: 'fail' }));
-        }
-        else {
-            response.send(ejs.render(htmlPage, { data: returnData[0] }));
-        }
-    }
-    else {
-        response.redirect('/');
-    }
-});
-
-router.get('/result/add', function (request, response) { //관리자 학생 북마크 추가
-    if (request.session.isLogin == 2) {
-        var isSame = false;
-        var htmlPage = fs.readFileSync('html/admin/find.html', 'utf8');
-        data = request.query._data;
-        parsing = data.split(',');
-        for (var i = 0; i < students.length; i++) {
-            if (students[i][4] == parsing[4]) {
-                isSame = true;
-                break;
-            }
-        }
-        if (!isSame) {
-            students.push(parsing);
-            response.send(ejs.render(htmlPage, { status: 'add' }))
-        }
-        else {
-            response.send(ejs.render(htmlPage, { status: 'same' }))
-        }
-    }
-    else {
-        response.redirect('/');
-    }
-});
-
-router.post('/login', function (request, response) { //관리자 로그인
-    if (request.session.isLogin == null) { //로그인 세션이 존재하지 않을 경우
-        var pw = request.body._password;
-
-        getConnection(function (conn) {
-            var queryString = 'select code from users where code = ? and type = ?';
-            params = [pw, '2'];
-            conn.query(queryString, params, function (err, result) {
-                conn.release();
-                if (result.length == 0) {
-                    var htmlPage = fs.readFileSync('html/admin/login.html', 'utf8');
-                    response.send(ejs.render(htmlPage, { status: 'none' }));
-                }
-                else {
-                    if (!err) {
-                        if (pw == result[0].code) {
-                            request.session.isLogin = 2; //null: 비로그인 1: 일반로그인 2: 관리자 로그인
-                            request.session.save(function () {
-                                response.redirect('/admin/menu');
-                            });
-                        }
-                        else {
-                            var htmlPage = fs.readFileSync('html/admin/login.html', 'utf8');
-                            response.send(ejs.render(htmlPage, { status: 'fail' }));
-                        }
-                    }
-                    else {
-                        console.log(err);
-                    }
-                }
-            });
-        });
-    }
-    else {
-        response.redirect('/');
     }
 });
 

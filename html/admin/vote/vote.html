@@ -17,7 +17,7 @@
 
     <body>
         <div class="container-fluid px-0">
-            <header class="py-4 mb-4 border-bottom text-center">
+            <header class="p-4 mb-4 border-bottom text-center">
                 <a href="/">
                     <img
                         src="/static/resource/sca_system_logo.svg"
@@ -26,9 +26,71 @@
                 </a>
             </header>
             <div class="container my-5">
-                <div
-                    class="pp-5 mb-4 bg-light rounded-3 vertical-center"
-                    style="min-height:500px">
+                <% function date(old_date){
+                    let date = old_date.toString().split(' ');
+                    let result = date[3] + "년 ";
+                    //월
+                    if (date[1] == 'Jan') {
+                        result += "1월 ";
+                    } else if (date[1] == 'Feb') {
+                        result += "2월 ";
+                    } else if (date[1] == 'Mar') {
+                        result += "3월 ";
+                    } else if (date[1] == 'Apr') {
+                        result += "4월 ";
+                    } else if (date[1] == 'May') {
+                        result += "5월 ";
+                    } else if (date[1] == 'Jun') {
+                        result += "6월 ";
+                    } else if (date[1] == 'Jul') {
+                        result += "7월 ";
+                    } else if (date[1] == 'Aug') {
+                        result += "8월 ";
+                    } else if (date[1] == 'Sep') {
+                        result += "9월 ";
+                    } else if (date[1] == 'Oct') {
+                        result += "10월 ";
+                    } else if (date[1] == 'Nov') {
+                        result += "11월 ";
+                    } else if (date[1] == 'Dec') {
+                        result += "12월 ";
+                    }
+            
+                    result += date[2] + "일 ";
+            
+                    //요일
+                    if (date[0] == 'Mon') {
+                        result += "월요일";
+                    } else if (date[0] == 'Tue') {
+                        result += "화요일";
+                    } else if (date[0] == 'Wed') {
+                        result += "수요일";
+                    } else if (date[0] == 'Thu') {
+                        result += "목요일";
+                    } else if (date[0] == 'Fri') {
+                        result += "금요일";
+                    } else if (date[0] == 'Sat') {
+                        result += "토요일";
+                    } else if (date[0] == 'sun') {
+                        result += "일요일";
+                    }
+
+                    times = date[4].split(":");
+
+                    if (parseInt(times[0]) >= 12) { //오후
+                        result += " 오후 ";
+                        times[0] = (parseInt(times[0]) - 12).toString();
+                        if (times[0] == '00') times[0] = ' 12';
+                    }
+                    else if (times[0] == '00') times[0] = ' 12';
+                    else {
+                        result += " 오전 ";
+                    }
+            
+                    result += times[0] +"시 " + times[1] + "분";
+                    return result;
+                } %>
+                <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                     <div class="d-block m-auto">
                         <h1 class="text-center mb-3">투표 관리</h1>
                         <div class="line my-5"></div>
@@ -44,6 +106,9 @@
                                         </h5>
                                         <p class="card-text">
                                             <%= votedata_1[i].vote_subject %>
+                                        </p>
+                                        <p class="card-text">
+                                            <%= date(votedata_1[i].vote_endtime) %>까지
                                         </p>
                                         <button onclick=<%="vote_end("+votedata_1[i].vote_id+")"%> class="btn btn-primary w-100">투표 종료</button>
                                     </div>
@@ -74,14 +139,17 @@
                                         <p class="card-text">
                                             <%= votedata_0[i].vote_subject %>
                                         </p>
+                                        <p class="card-text">
+                                            <%= date(votedata_0[i].vote_endtime) %>까지
+                                        </p>
                                         <button
                                             onclick=<%="vote_start("+votedata_0[i].vote_id+")"%>
-                                            class="btn btn-primary w-100">투표 시작</button>
+                                            class="btn btn-primary w-100 mb-1">투표 시작</button>
                                         <button
                                             onclick=<%="vote_delete("+votedata_0[i].vote_id+")"%>
                                             class="btn btn-primary w-100">투표 삭제</button>
                                     </div>
-                                    <% if (votedata_0.length> 0) { %>
+                                    <% if (votedata_0.length > 0) { %>
                                         <div class="line m-0"></div>
                                     <% } %>
                                 <% } %>
@@ -104,12 +172,15 @@
                                         <p class="card-text">
                                             <%= votedata_2[i].vote_subject %>
                                         </p>
+                                        <p class="card-text">
+                                            <%= date(votedata_2[i].vote_endtime) %>까지
+                                        </p>
                                         <button
                                             onclick=<%="vote_open("+votedata_2[i].vote_id+")"%>
-                                            class="btn btn-primary">결과</button>
+                                            class="btn btn-primary w-100 mb-1">결과</button>
                                             <button
                                             onclick=<%="vote_delete("+votedata_2[i].vote_id+")"%>
-                                            class="btn btn-primary">투표 삭제</button>
+                                            class="btn btn-primary w-100">투표 삭제</button>
                                     </div>
                                     <% if (votedata_2.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -121,6 +192,7 @@
                                 </div>
                             <% } %>
                         </div>
+                        <h6 class="text-center" id="clock"></h6>
                     </div>
                 </div>
             </div>
@@ -175,5 +247,41 @@
                 func_run();
             }
         }
+    </script>
+    <script>
+        var clockTarget = document.getElementById("clock");
+        
+        function clock() {
+            var date = new Date();
+            // date Object를 받아오고 
+            var month = date.getMonth();
+            // 달을 받아옵니다 
+            var clockDate = date.getDate();
+            // 몇일인지 받아옵니다 
+            var day = date.getDay();
+            // 요일을 받아옵니다. 
+            var week = ['일', '월', '화', '수', '목', '금', '토'];
+            // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
+            var hours = date.getHours();
+            // 시간을 받아오고 
+            var minutes = date.getMinutes();
+            // 분도 받아옵니다.
+            var seconds = date.getSeconds();
+            // 초까지 받아온후 
+            clockTarget .innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일 ` +
+            `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
+            // 월은 0부터 1월이기때문에 +1일을 해주고 
+            // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
+        }
+    
+        function init() { 
+            clock();
+            // 최초에 함수를 한번 실행시켜주고 
+            setInterval(clock, 1000);
+            // setInterval이라는 함수로 매초마다 실행을 해줍니다.
+            // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
+        }
+        init();
+        
     </script>
 </html>

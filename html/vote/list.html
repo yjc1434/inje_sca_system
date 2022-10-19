@@ -27,8 +27,8 @@
                 <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                     <div class="d-block m-auto">
                         <h1 class="text-center mb-3">투표 목록</h1>
-                        <div class="line my-5"></div>
-                        <div class="card mb-5 vote_card">
+                        <div class="line my-3"></div>
+                        <div class="card mb-4 vote_card">
                             <div class="card-header text-center">
                                 진행 중인 투표
                             </div>
@@ -101,8 +101,10 @@
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><%= votedata[i].vote_name %></h5>
                                         <p class="card-text"><%= votedata[i].vote_subject %></p>
-                                        <p class="card-text" vote_id="<%=votedata[i].id%>" vote_time="<%=votedata[i].vote_endtime%>"><%= date(votedata[i].vote_endtime) %>까지</p>
-                                    <% if (votedata[i].code_status == 0) { %>
+                                        <p class="card-text" style="font-size:0.8rem"><%= date(votedata[i].vote_endtime) %>까지</p>
+                                    <% if (new Date(votedata[i].vote_endtime) < new Date()) { %>
+                                        <button onclick="alert('투표가 종료되었습니다.');" class="btn btn-secondary w-100 mb-2">투표종료</button>  
+                                    <% } else if (votedata[i].code_status == 0) { %>
                                         <button onclick=<%="vote("+votedata[i].vote_id+")"%> class="btn btn-primary w-100 mb-2">투표하기</button>  
                                     <% } else if (votedata[i].code_status == 1) { %>
                                         <button onclick="alert('이미 투표에 참여하셨습니다.');" class="btn btn-secondary w-100">투표완료</button>
@@ -118,7 +120,8 @@
                                 </div>
                             <% } %>
                         </div>
-                         <button class="btn btn-primary w-100 mb-1" onclick="location.href='/logout'">로그아웃</button>
+                        <h6 class="text-center mb-3" id="clock"></h6>
+                         <button class="btn btn-primary w-100 mb-1" onclick="logout()">로그아웃</button>
                     </div>
                 </div>
             </div>
@@ -130,6 +133,12 @@
         </div>
     </body>
 <script>
+    function logout() {
+        if(confirm('로그아웃 하시겠습니까?')) {
+            location.href='/logout'
+            alert('로그아웃 되었습니다.');
+        }
+    }
     function timer(time) {
         var datetime = new Date(time);
         var nowtime = new Date();
@@ -142,7 +151,7 @@
         var diffSec = Math.floor(diff / 1000 % 60);
     }
 
-    function vote(vote_id) {
+    function vote(vote_id,time) {
         var form = document.createElement('form');
         form.setAttribute('method', 'post');
         form.setAttribute('action', '/vote/run');
@@ -163,5 +172,41 @@
         document.body.appendChild(form);
         form.submit();
     }
+</script>
+<script>
+    var clockTarget = document.getElementById("clock");
+    
+    function clock() {
+        var date = new Date();
+        // date Object를 받아오고 
+        var month = date.getMonth();
+        // 달을 받아옵니다 
+        var clockDate = date.getDate();
+        // 몇일인지 받아옵니다 
+        var day = date.getDay();
+        // 요일을 받아옵니다. 
+        var week = ['일', '월', '화', '수', '목', '금', '토'];
+        // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
+        var hours = date.getHours();
+        // 시간을 받아오고 
+        var minutes = date.getMinutes();
+        // 분도 받아옵니다.
+        var seconds = date.getSeconds();
+        // 초까지 받아온후 
+        clockTarget .innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일 ` +
+        `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
+        // 월은 0부터 1월이기때문에 +1일을 해주고 
+        // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
+    }
+
+    function init() { 
+        clock();
+        // 최초에 함수를 한번 실행시켜주고 
+        setInterval(clock, 1000);
+        // setInterval이라는 함수로 매초마다 실행을 해줍니다.
+        // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
+    }
+    init();
+    
 </script>
 </html>

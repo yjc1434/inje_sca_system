@@ -46,7 +46,9 @@ function checkSuperPassword() {
 
 function checkVotePassword() {
     var _password = document.getElementsByName('_password')[0].value;
+    var _name = document.getElementsByName('_name')[0].value;
     document.getElementsByName('_password')[0].value = "";
+    
     if (_password == "") {
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
         document.getElementsByName('_password')[0].className = 'form-control mb-3 is-invalid';
@@ -55,7 +57,7 @@ function checkVotePassword() {
     else {
         var form = document.createElement('form');
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '/vote/auth');
+        form.setAttribute('action', '/auth');
 
         var input = document.createElement('input');
         input.setAttribute('type', 'text');

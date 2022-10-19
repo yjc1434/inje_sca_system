@@ -8,6 +8,7 @@ var fs = require("fs");
 var path = require('path');
 require('dotenv').config();
 var bodyParser = require('body-parser');
+
 require('./config/excel_fs');
 require('./config/session')(app);
 
@@ -19,7 +20,6 @@ app.use('/static', express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/',indexRouter);
-
 
 server.listen(3000, function () {
     var dir = './temp/upload';

@@ -9,6 +9,7 @@
     <title>인제대학교 동아리연합회</title>
     <link rel="stylesheet" href="/static/css/inje-settings.css">
     <script type="text/javascript" src="/static/js/inje-script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body>
     <div class="container-fluid px-0">
@@ -20,10 +21,10 @@
         <div class="container my-5">
             <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                 <div class="d-block m-auto">
-                    <h1 class="text-center mb-3">투표 결과</h1>
+                    <h1 class="text-center mb-3">투표 결과 - <%= data[0].vote_name %></h1>
                     <div class="line my-5"></div>
                     <div class="row align-items-center result_card">
-                        <div class="card mb-5">
+                        <!-- <div class="card mb-5">
                             <ul class="list-group list-group-flush text-center">
                                 <li class="list-group-item"><b><%= data[0].vote_name %></b>
                                 </li>
@@ -34,8 +35,10 @@
                                 <li class="list-group-item">기권 : <%= data[0].vote_none %>
                                 </li>
                             </ul>
-                        </div>
-                        <button class="btn btn-gray mb-3" onclick="location.href='/admin/vote'"
+                        </div> -->
+                        <canvas class="mb-3" id="bar-chart"></canvas>
+                        <h5 class="text-center">찬성 : <%= data[0].vote_agree %><br>반대 : <%= data[0].vote_disagree %><br>기권 : <%= data[0].vote_none %></h5>
+                        <button class="btn btn-gray mt-3" onclick="location.href='/admin/vote'"
                             style="background-color: rgb(223, 223, 223);">메뉴로 돌아가기</button>
                     </div>
                 </div>
@@ -49,4 +52,24 @@
         </footer>
     </div>
 </body>
+<script>
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels: ["찬성", "반대", "기권"],
+          datasets: [{
+            label: "표",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+            data: [parseInt('<%= data[0].vote_agree %>'),parseInt('<%= data[0].vote_disagree %>'),parseInt('<%= data[0].vote_none %>')]
+          }]
+        },
+        options: {
+        legend: {display : false },
+          title: {
+            display: false,
+            text: '<%= data[0].vote_name %>'
+          }
+        }
+    });
+</script>
 </html>

@@ -22,8 +22,9 @@
             <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                 <div class="d-block m-auto">
                     <h1 class="text-center mb-3">투표 추가</h1>
+                    <h6 class="text-center mb-3" id="clock"></h6>
                     <div class="line my-5"></div>
-                    <div class="row align-items-center password_card">
+                    <div class="row align-items-center password_card" style= "max-width: 700px;">
                             <div class="col-12 col-md-3 text-center-md">
                                 <label for="_title" class="col-form-label mb-3">제목</label>
                             </div>
@@ -63,7 +64,7 @@
                                     <div class="col-4 pe-1">
                                         <select class="form-select" id="_endtime_apm">
                                             <option value="am">오전</option>
-                                            <option value="pn">오후</option>
+                                            <option value="pm">오후</option>
                                         </select>
                                     </div>
                                     <div class="col-4 px-2">
@@ -110,14 +111,6 @@
                                   </div>
                             </div>
                             <div class="col-12 col-md-3 text-center-md">
-                                <label for="_rowname" class="col-form-label mb-3">인증코드 셀</label>
-                            </div>
-                            <div class="col-12 col-md-9 mb-3">
-                                <select class="form-select" id="_rowname">
-                                    <option value="select">파일을 먼저 선택해주세요.</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-md-3 text-center-md">
                                 <label for="vote_auth" class="col-form-label mb-3">암호키</label>
                             </div>
                             <div class="col-12 col-md-9">
@@ -132,7 +125,7 @@
                                 <button onclick="voteAdd()" class="btn btn-primary w-100 mb-3">완료</button>
                             </div>
                             <div class="col-12 col-md-6">
-                                <button class="btn btn-gray w-100 mb-3" onclick="location.href='/admin/menu'"
+                                <button class="btn btn-gray w-100 mb-3" onclick="location.href='/admin/vote'"
                                     style="background-color: rgb(223, 223, 223);">뒤로가기</button>
                             </div>
                             <div class="w-100 mb-3"></div>
@@ -158,8 +151,9 @@
 
     function readExcel() {
         let input = document.getElementById("_list");
-        let select = document.getElementById('_rowname');
+        //let select = document.getElementById('_rowname');
         let reader = new FileReader();
+        let open = false;
 
         reader.onload = function () {
             let data = reader.result;
@@ -167,23 +161,24 @@
             sheetName = workBook.SheetNames[0];
             firstSheet = workBook.Sheets[sheetName];
             let rows = XLSX.utils.sheet_to_json(firstSheet);
-            select.innerHTML = ""
-            let option_select = document.createElement('option');
-            option_select.setAttribute('value','select');
-            option_select.innerText ='인증코드로 사용할 셀을 선택해주세요.';
-            select.appendChild(option_select);
+            //select.innerHTML = ""
+            //let option_select = document.createElement('option');
+            //option_select.setAttribute('value','select');
+            //option_select.innerText ='인증코드로 사용할 셀을 선택해주세요.';
+            //select.appendChild(option_select);
 
-            let str = Object.keys(rows[0]).toString();
-            let strs = str.split(',');
+            //let str = Object.keys(rows[0]).toString();
+            //let strs = str.split(',');
 
-            for (let i = 0; i < strs.length; i++) {
-                let option = document.createElement('option');
-                option.setAttribute('value',strs[i]);
-                option.innerText = strs[i];
-                select.appendChild(option);
-            }
+            //for (let i = 0; i < strs.length; i++) {
+                //let option = document.createElement('option');
+                //option.setAttribute('value',strs[i]);
+                //option.innerText = strs[i];
+                //select.appendChild(option);
+            //}
 
             alert('파일을 불러왔습니다!');
+            open = true;
         };
         reader.readAsBinaryString(input.files[0]);
     }
@@ -203,7 +198,7 @@
             if (month >= 1 && month <= 12) {
                 if (day >= 1 && day <= 31) {
                     let dates = year + "-" + tct(month) + "-" + tct(day);
-                    if (apm == 'pm') hour += 12;
+                    if (apm == 'pm') hour = parseInt(hour) + parseInt(12);
                     dates += " " + tct(hour) + ":" + tct(min) + ":00";
                     return dates;
                 }
@@ -218,18 +213,19 @@
         var sub = document.getElementById('_subject').value;
         var key = document.getElementById('_keys').value;
         var end = date();
-        var cellname = document.getElementById('_rowname').value;
+        //var cellname = document.getElementById('_rowname').value;
         var file = document.getElementById('_list');
 
         if (name == '' || sub == '') {
             alert('빈칸을 입력해주세요!');
         }
-        else if (file == null) {
+        else if (file == null && open == true) {
             alert('인증코드 파일을 업로드해주세요!');
         }
+        else if (new Date(end) <= new Date()) {
+            alert('현재 시간 이후로 종료시간을 설정해주세요!');
+        }
         else {
-            console.log(end);
-
             if(confirm("추가하시겠습니까?")) {
                 var form = document.createElement('form');
                 form.setAttribute('method', 'post');
@@ -256,16 +252,16 @@
                 input4.setAttribute('name', 'vote_endtime');
                 input4.setAttribute('value', end);
 
-                var input5 = document.createElement('input');
-                input5.setAttribute('type', 'hidden');
-                input5.setAttribute('name', 'vote_cellname');
-                input5.setAttribute('value', cellname);
+                //var input5 = document.createElement('input');
+                //input5.setAttribute('type', 'hidden');
+                //input5.setAttribute('name', 'vote_cellname');
+                //input5.setAttribute('value', cellname);
                 
                 form.appendChild(input1);
                 form.appendChild(input2);
                 form.appendChild(input3);
                 form.appendChild(input4);
-                form.appendChild(input5);
+                //form.appendChild(input5);
                 form.appendChild(file);
                 
                 document.body.appendChild(form);
@@ -284,5 +280,41 @@
         keys.setSelectionRange(0,0);
         alert("복사되었습니다!");
     }
+</script>
+<script>
+    var clockTarget = document.getElementById("clock");
+    
+    function clock() {
+        var date = new Date();
+        // date Object를 받아오고 
+        var month = date.getMonth();
+        // 달을 받아옵니다 
+        var clockDate = date.getDate();
+        // 몇일인지 받아옵니다 
+        var day = date.getDay();
+        // 요일을 받아옵니다. 
+        var week = ['일', '월', '화', '수', '목', '금', '토'];
+        // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
+        var hours = date.getHours();
+        // 시간을 받아오고 
+        var minutes = date.getMinutes();
+        // 분도 받아옵니다.
+        var seconds = date.getSeconds();
+        // 초까지 받아온후 
+        clockTarget.innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일\n` +
+        `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
+        // 월은 0부터 1월이기때문에 +1일을 해주고 
+        // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
+    }
+
+    function init() { 
+        clock();
+        // 최초에 함수를 한번 실행시켜주고 
+        setInterval(clock, 1000);
+        // setInterval이라는 함수로 매초마다 실행을 해줍니다.
+        // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
+    }
+    init();
+    
 </script>
 </html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>인제대학교 동아리연합회</title>
+    <link rel="stylesheet" href="/static/css/inje-settings.css">
+    <script type = "text/javascript" src = "/static/js/inje-script.js"></script>
+</head>
+<body> 
+    <div class="container-fluid px-0">
+        <header class="p-4 mb-4 border-bottom text-center">
+            <a href="/">
+                <img src="/static/resource/sca_system_logo.svg" style="min-height:25px;max-height:50px;" alt="">
+            </a>
+        </header>
+        <div class="container my-5">
+            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <h1 class="text-center mb-4">본인 인증</h1>
+                    <div class="line my-3"></div>
+                    <div class="row align-items-center password_card">
+                        <div class="col-12 col-md-2 text-start text-md-center">
+                            <label for="_group" class="col-form-label mb-2 mb-md-3">소속</label>
+                        </div>
+                        <div class="col-6 col-md-5 text-center pe-1">
+                            <select class="form-select form-select-small mb-3" id="_group">
+                                <option>공연예술분과</option>
+                                <option>교양봉사분과</option>
+                                <option>전시학술분과</option>
+                                <option>종교분과</option>
+                                <option>체육분과</option>
+                                <option>동아리연합회</option>
+                                <option>학생복지처</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-5 text-center ps-1">
+                            <select class="form-select form-select-small mb-3" id="_name">
+                                <option>뮤즈</option>
+                                <option>블랙나이트</option>
+                                <option>슈프림</option>
+                                <option>신들메</option>
+                                <option>아미스</option>
+                                <option>안단테</option>
+                                <option>하날소리</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 text-start text-md-center">
+                            <label for="_password" class="col-form-label mb-2 mb-md-3">인증코드</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" class="form-control mb-3" id="_password" name="_password" placeholder="인증코드 입력">
+                        </div>
+                        <div class="col-12">
+                            <button onclick="new_check_info()" class="btn btn-primary w-100 mb-3">인증하기</button>
+                        </div>
+                        <div class="w-100 mb-3"></div>
+                        <div class="text-center text-danger mb-3 invisible" name="label" style="padding: 0px;">오류메시지 출력란</div>
+                    </div>
+                    <h6 class="text-center mb-3" id="clock"></h6>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center p-5" style="background-color:#333;">
+            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+            <div class="mb-5"></div>
+            <p class="footer-text" style="color:#E0E0E0;">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    let data = `<%=status%>`;
+    if(data == 'fail') {        
+        document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+        document.getElementsByName('label')[0].innerText = '정보가 일치하지 않습니다!';
+    }
+    document.getElementById('_group').onchange = load_name;
+
+    function new_check_info() {
+        const req=new XMLHttpRequest();
+		req.open('post','/auth');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		req.onreadystatechange = function() {
+            if(req.status == 200 && req.readyState == 4) {
+                if (req.response != 'true') {
+                    document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+                    document.getElementsByName('label')[0].innerText = '정보가 일치하지 않습니다!';
+                    document.getElementById('_password').value = "";
+                }
+                else {
+                    location.href="/checkinfo";
+                }
+            }
+        }
+		req.send('name='+document.getElementById('_name').value+'&password='+document.getElementById('_password').value);
+    }
+
+    function load_name() {
+        if (document.getElementById('_group').value == '동아리연합회') {
+            var arr = ['회장','부회장','공연예술분과장','교양봉사분과장','전시학술분과장','종교분과장','체육분과장']
+            var html = '';
+            for (var i = 0; i < arr.length; i++) {
+                var temp = '<option>' + arr[i] +'</option>'
+                html += temp;
+            }
+            document.getElementById('_name').innerHTML = html;
+        }
+        else {
+            const req=new XMLHttpRequest();
+            req.open('post','/selectbox');
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.onreadystatechange = function() {
+            if(req.status == 200 && req.readyState == 4) {
+                    var arr = JSON.parse(req.response);
+                    var html = '';
+                    for (var i = 0; i < arr.length; i++) {
+                        var temp = '<option>' + arr[i].name +'</option>'
+                        html += temp;
+                    }
+                    document.getElementById('_name').innerHTML = html;
+                }
+            }
+            req.send('group='+document.getElementById('_group').value);
+        }
+    }
+
+</script>
+<script>
+        var clockTarget = document.getElementById("clock");
+        
+        function clock() {
+            var date = new Date();
+            // date Object를 받아오고 
+            var month = date.getMonth();
+            // 달을 받아옵니다 
+            var clockDate = date.getDate();
+            // 몇일인지 받아옵니다 
+            var day = date.getDay();
+            // 요일을 받아옵니다. 
+            var week = ['일', '월', '화', '수', '목', '금', '토'];
+            // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
+            var hours = date.getHours();
+            // 시간을 받아오고 
+            var minutes = date.getMinutes();
+            // 분도 받아옵니다.
+            var seconds = date.getSeconds();
+            // 초까지 받아온후 
+            clockTarget .innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일 ` +
+            `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
+            // 월은 0부터 1월이기때문에 +1일을 해주고 
+            // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
+        }
+    
+        function init() { 
+            clock();
+            // 최초에 함수를 한번 실행시켜주고 
+            setInterval(clock, 1000);
+            // setInterval이라는 함수로 매초마다 실행을 해줍니다.
+            // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
+        }
+        init();
+        
+    </script>
+</html>

@@ -12,6 +12,70 @@
     <script type="text/javascript" src="/static/js/inje-script.js"></script>
 </head>
 <body>
+    <% function date(old_date){
+        let date = old_date.toString().split(' ');
+        let result = date[3] + "년 ";
+        //월
+        if (date[1] == 'Jan') {
+            result += "1월 ";
+        } else if (date[1] == 'Feb') {
+            result += "2월 ";
+        } else if (date[1] == 'Mar') {
+            result += "3월 ";
+        } else if (date[1] == 'Apr') {
+            result += "4월 ";
+        } else if (date[1] == 'May') {
+            result += "5월 ";
+        } else if (date[1] == 'Jun') {
+            result += "6월 ";
+        } else if (date[1] == 'Jul') {
+            result += "7월 ";
+        } else if (date[1] == 'Aug') {
+            result += "8월 ";
+        } else if (date[1] == 'Sep') {
+            result += "9월 ";
+        } else if (date[1] == 'Oct') {
+            result += "10월 ";
+        } else if (date[1] == 'Nov') {
+            result += "11월 ";
+        } else if (date[1] == 'Dec') {
+            result += "12월 ";
+        }
+
+        result += date[2] + "일 ";
+
+        //요일
+        if (date[0] == 'Mon') {
+            result += "월요일";
+        } else if (date[0] == 'Tue') {
+            result += "화요일";
+        } else if (date[0] == 'Wed') {
+            result += "수요일";
+        } else if (date[0] == 'Thu') {
+            result += "목요일";
+        } else if (date[0] == 'Fri') {
+            result += "금요일";
+        } else if (date[0] == 'Sat') {
+            result += "토요일";
+        } else if (date[0] == 'sun') {
+            result += "일요일";
+        }
+
+        times = date[4].split(":");
+
+        if (parseInt(times[0]) >= 12) { //오후
+            result += " 오후 ";
+            times[0] = (parseInt(times[0]) - 12).toString();
+            if (times[0] == '00') times[0] = ' 12';
+        }
+        else if (times[0] == '00') times[0] = ' 12';
+        else {
+            result += " 오전 ";
+        }
+
+        result += times[0] +"시 " + times[1] + "분";
+        return result;
+    } %>
     <div class="container-fluid px-0">
         <header class="p-4 mb-4 border-bottom text-center">
             <a href="/">
@@ -21,20 +85,23 @@
         <div class="container my-5">
             <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                 <div class="d-block m-auto">
-                    <h1 class="text-center mb-3">투표</h1>
-                    <div class="line my-5"></div>
+                    <h1 class="text-center mb-4">투표하기</h1>
+                    <div class="line my-3"></div>
                     <div class="card mb-5 vote_card text-center">
                         <div class="card-header">
-                            <%= votename %>
+                            투표 정보
                         </div>
                         <div class="card-body">
-                            <div class="line mx-auto my-3" style="width: 80%;"></div>
-                            <button name='v_btn1' onclick="vote_agree()" class="btn btn-primary w-50 mb-2">찬성</button>
-                            <button name='v_btn2' onclick="vote_disagree()" class="btn btn-danger w-50 mb-2">반대</button>
-                            <button name='v_btn3' onclick="vote_none()" class="btn btn_return w-50 mb-2">기권</button>
+                            <h3><%= votename %></h3>
+                            <p class="mb-3"><%= votesubject %></p>                     
+                            <button name='v_btn1' onclick="vote_agree()" class="btn btn-primary w-100 mb-2">찬성</button>
+                            <button name='v_btn2' onclick="vote_disagree()" class="btn btn-danger w-100 mb-2">반대</button>
+                            <button name='v_btn3' onclick="vote_none()" class="btn btn_return w-100 mb-2">기권</button>
                         </div>
+                        <p style="font-size:0.8rem"><%= date(voteend) %>까지</p>
                     </div>
                     <button onclick="location.href='/'" class="btn btn-primary w-100 mb-3">뒤로가기</button>
+                    <h6 class="text-center mb-3" id="clock"></h6>
                 </div>
             </div>
         </div>
@@ -48,103 +115,131 @@
 </body>
 <script>
     function vote_agree() {
-        var form = document.createElement('form');
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', '/vote/run/commit');    
-        
-        var input1 = document.createElement('input');
-        input1.setAttribute('type', 'hidden');
-        input1.setAttribute('name', 'voteid');
-        input1.setAttribute('value', `<%= voteid %>`);
+        if (confirm('투표에 찬성하시겠습니까?')) {
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/vote/run/commit');    
+            
+            var input1 = document.createElement('input');
+            input1.setAttribute('type', 'hidden');
+            input1.setAttribute('name', 'voteid');
+            input1.setAttribute('value', `<%= voteid %>`);
 
-        var input2 = document.createElement('input');
-        input2.setAttribute('type', 'hidden');
-        input2.setAttribute('name', 'votevalue');
-        input2.setAttribute('value', 'agree');
+            var input2 = document.createElement('input');
+            input2.setAttribute('type', 'hidden');
+            input2.setAttribute('name', 'votevalue');
+            input2.setAttribute('value', 'agree');
 
-        var input3 = document.createElement('input');
-        input3.setAttribute('type', 'hidden');
-        input3.setAttribute('name', 'authcode');
-        input3.setAttribute('value', `<%= authcode %>`);
+            var input3 = document.createElement('input');
+            input3.setAttribute('type', 'hidden');
+            input3.setAttribute('name', 'authcode');
+            input3.setAttribute('value', `<%= authcode %>`);
 
-        var input4 = document.createElement('input');
-        input4.setAttribute('type', 'hidden');
-        input4.setAttribute('name', 'votekey');
-        input4.setAttribute('value', `<%= votekey %>`);
 
-        form.appendChild(input1);
-        form.appendChild(input2);
-        form.appendChild(input3);
-        form.appendChild(input4);
+            form.appendChild(input1);
+            form.appendChild(input2);
+            form.appendChild(input3);
+            //form.appendChild(input4);
 
-        document.body.appendChild(form);
-        form.submit();
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
     function vote_disagree() {
-        var form = document.createElement('form');
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', '/vote/run/commit');    
-        
-        var input1 = document.createElement('input');
-        input1.setAttribute('type', 'hidden');
-        input1.setAttribute('name', 'voteid');
-        input1.setAttribute('value', `<%= voteid %>`);
-
-        var input2 = document.createElement('input');
-        input2.setAttribute('type', 'hidden');
-        input2.setAttribute('name', 'votevalue');
-        input2.setAttribute('value', 'disagree');
-
-        var input3 = document.createElement('input');
-        input3.setAttribute('type', 'hidden');
-        input3.setAttribute('name', 'authcode');
-        input3.setAttribute('value', `<%= authcode %>`);
-
-        var input4 = document.createElement('input');
-        input4.setAttribute('type', 'hidden');
-        input4.setAttribute('name', 'votekey');
-        input4.setAttribute('value', `<%= votekey %>`);
-
-        form.appendChild(input1);
-        form.appendChild(input2);
-        form.appendChild(input3);
-        form.appendChild(input4);
-
-        document.body.appendChild(form);
-        form.submit();
+        if (confirm('투표에 반대하시겠습니까?')) {
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/vote/run/commit');    
+            
+            var input1 = document.createElement('input');
+            input1.setAttribute('type', 'hidden');
+            input1.setAttribute('name', 'voteid');
+            input1.setAttribute('value', `<%= voteid %>`);
+    
+            var input2 = document.createElement('input');
+            input2.setAttribute('type', 'hidden');
+            input2.setAttribute('name', 'votevalue');
+            input2.setAttribute('value', 'disagree');
+    
+            var input3 = document.createElement('input');
+            input3.setAttribute('type', 'hidden');
+            input3.setAttribute('name', 'authcode');
+            input3.setAttribute('value', `<%= authcode %>`);
+    
+    
+            form.appendChild(input1);
+            form.appendChild(input2);
+            form.appendChild(input3);
+    
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
     function vote_none() {
-        var form = document.createElement('form');
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', '/vote/run/commit');    
-        
-        var input1 = document.createElement('input');
-        input1.setAttribute('type', 'hidden');
-        input1.setAttribute('name', 'voteid');
-        input1.setAttribute('value', `<%= voteid %>`);
-
-        var input2 = document.createElement('input');
-        input2.setAttribute('type', 'hidden');
-        input2.setAttribute('name', 'votevalue');
-        input2.setAttribute('value', 'none');
-
-        var input3 = document.createElement('input');
-        input3.setAttribute('type', 'hidden');
-        input3.setAttribute('name', 'authcode');
-        input3.setAttribute('value', `<%= authcode %>`);
-
-        var input4 = document.createElement('input');
-        input4.setAttribute('type', 'hidden');
-        input4.setAttribute('name', 'votekey');
-        input4.setAttribute('value', `<%= votekey %>`);
-
-        form.appendChild(input1);
-        form.appendChild(input2);
-        form.appendChild(input3);
-        form.appendChild(input4);
-
-        document.body.appendChild(form);
-        form.submit();
+        if(confirm('투표에 기권하시겠습니까?')) {
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/vote/run/commit');    
+            
+            var input1 = document.createElement('input');
+            input1.setAttribute('type', 'hidden');
+            input1.setAttribute('name', 'voteid');
+            input1.setAttribute('value', `<%= voteid %>`);
+    
+            var input2 = document.createElement('input');
+            input2.setAttribute('type', 'hidden');
+            input2.setAttribute('name', 'votevalue');
+            input2.setAttribute('value', 'none');
+    
+            var input3 = document.createElement('input');
+            input3.setAttribute('type', 'hidden');
+            input3.setAttribute('name', 'authcode');
+            input3.setAttribute('value', `<%= authcode %>`);
+    
+    
+            form.appendChild(input1);
+            form.appendChild(input2);
+            form.appendChild(input3);
+    
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
+</script>
+<script>
+    var clockTarget = document.getElementById("clock");
+    
+    function clock() {
+        var date = new Date();
+        // date Object를 받아오고 
+        var month = date.getMonth();
+        // 달을 받아옵니다 
+        var clockDate = date.getDate();
+        // 몇일인지 받아옵니다 
+        var day = date.getDay();
+        // 요일을 받아옵니다. 
+        var week = ['일', '월', '화', '수', '목', '금', '토'];
+        // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
+        var hours = date.getHours();
+        // 시간을 받아오고 
+        var minutes = date.getMinutes();
+        // 분도 받아옵니다.
+        var seconds = date.getSeconds();
+        // 초까지 받아온후 
+        clockTarget .innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일 ` +
+        `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
+        // 월은 0부터 1월이기때문에 +1일을 해주고 
+        // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
+    }
+
+    function init() { 
+        clock();
+        // 최초에 함수를 한번 실행시켜주고 
+        setInterval(clock, 1000);
+        // setInterval이라는 함수로 매초마다 실행을 해줍니다.
+        // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
+    }
+    init();
+    
 </script>
 </html>

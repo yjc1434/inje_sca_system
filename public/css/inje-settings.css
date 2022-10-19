@@ -66,7 +66,7 @@ html,
     }
 
     .password_card {
-        max-width: 600px;
+        max-width: 400px;
         margin: 0 auto;
     }
 
@@ -170,4 +170,11 @@ footer > .logo {
     background-size: 15px;
     background-position: right .75rem center;
     box-sizing: border-box;
+}
+
+.form-select-small {
+    background-position: right 0.3rem center;
+    background-size: 12px 8px;
+    padding-right: 0.1rem;
+    padding-left: 0.5rem;
 }

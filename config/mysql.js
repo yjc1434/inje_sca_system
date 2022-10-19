@@ -22,7 +22,6 @@ function getConnection(callback) {
     catch (err) {
         console.log(err);
     }
-    
 };
 
 module.exports = getConnection;
