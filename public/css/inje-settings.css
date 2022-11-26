@@ -92,17 +92,32 @@ html,
     .vote_card {
         min-width: 500px;
     }
+    .votetime {
+        font-size: 1rem;
+    }
+    .vote_logo {
+        width: 400px;
+    }
 }
 
 @media (max-width: 576px) {
+    .m_br {
+        display: block;
+    }
+    .votetime {
+        font-size: 0.7rem;
+    }
     .footer-text {
         font-size: 12px;
     }
     .vote_card {
-        min-width: 280px;
+        min-width: 100%;
     }
     .pp-5 {
         padding: 2rem!important;
+    }
+    .vote_logo {
+        width: 300px;
     }
 }
 
@@ -127,6 +142,7 @@ footer {
     margin : 0px;
     color:#E0E0E0;
     font-weight: 300;
+    word-break: keep-all;
 }
 
 footer > .logo {

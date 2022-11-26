@@ -93,6 +93,7 @@
                 <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
                     <div class="d-block m-auto">
                         <h1 class="text-center mb-3">투표 관리</h1>
+                        <h6 class="text-center" id="clock"></h6>
                         <div class="line my-5"></div>
                         <div class="card mb-3 vote_card">
                             <div class="card-header">
@@ -104,12 +105,17 @@
                                         <h5 class="card-title">
                                             <%= votedata_1[i].vote_name %>
                                         </h5>
-                                        <p class="card-text">
+                                        <!-- <p class="card-text">
                                             <%= votedata_1[i].vote_subject %>
-                                        </p>
+                                        </p> -->
                                         <p class="card-text">
                                             <%= date(votedata_1[i].vote_endtime) %>까지
                                         </p>
+                                        <p class="mb-1">· 투표 현황</p>
+                                        <div class="progress mb-3" style="position: relative;">
+                                            <div class="progress-bar h-100" name="progress" id=<%=votedata_1[i].vote_id%> role="progressbar" style="width: 0%; position:absolute;"></div>
+                                            <div class="text-center m-auto" name="text" id=<%=+votedata_1[i].vote_id%> style="position:relative; color:black"></div>
+                                        </div>
                                         <button onclick=<%="vote_end("+votedata_1[i].vote_id+")"%> class="btn btn-primary w-100">투표 종료</button>
                                     </div>
                                     <% if (votedata_1.length> 0) { %>
@@ -125,7 +131,7 @@
                         <button
                             onclick="location.href='/admin/vote/add'"
                             class="btn btn-primary w-100 mb-2">투표 추가</button>
-                        <button onclick="location.href='/admin'" class="btn btn_return w-100 mb-5">뒤로가기</button>
+                        <button onclick="back()" class="btn btn_return w-100 mb-5">뒤로가기</button>
                         <div class="card mb-3 vote_card">
                             <div class="card-header">
                                 진행 예정 투표
@@ -136,15 +142,23 @@
                                         <h5 class="card-title">
                                             <%= votedata_0[i].vote_name %>
                                         </h5>
-                                        <p class="card-text">
+                                        <!-- <p class="card-text">
                                             <%= votedata_0[i].vote_subject %>
-                                        </p>
+                                        </p> -->
                                         <p class="card-text">
                                             <%= date(votedata_0[i].vote_endtime) %>까지
                                         </p>
+                                        <p class="mb-1">· 투표 현황</p>
+                                        <div class="progress mb-3" style="position: relative;">
+                                            <div class="progress-bar h-100" name="progress" id=<%=votedata_0[i].vote_id%> role="progressbar" style="width: 0%; position:absolute;"></div>
+                                            <div class="text-center m-auto" name="text" id=<%=+votedata_0[i].vote_id%> style="position:relative; color:black"></div>
+                                        </div>
                                         <button
                                             onclick=<%="vote_start("+votedata_0[i].vote_id+")"%>
                                             class="btn btn-primary w-100 mb-1">투표 시작</button>
+                                            <button
+                                            onclick=<%="vote_edit("+votedata_0[i].vote_id+")"%>
+                                            class="btn btn-primary w-100 mb-1">투표 수정</button>
                                         <button
                                             onclick=<%="vote_delete("+votedata_0[i].vote_id+")"%>
                                             class="btn btn-primary w-100">투표 삭제</button>
@@ -169,18 +183,23 @@
                                         <h5 class="card-title">
                                             <%= votedata_2[i].vote_name %>
                                         </h5>
-                                        <p class="card-text">
+                                        <!-- <p class="card-text">
                                             <%= votedata_2[i].vote_subject %>
-                                        </p>
+                                        </p> -->
                                         <p class="card-text">
                                             <%= date(votedata_2[i].vote_endtime) %>까지
                                         </p>
+                                        <p class="mb-1">· 투표 현황</p>
+                                        <div class="progress mb-3" style="position: relative;">
+                                            <div class="progress-bar h-100" name="progress" id=<%=votedata_2[i].vote_id%> role="progressbar" style="width: 100%; position:absolute;"></div>
+                                            <div class="text-center m-auto" name="text" id=<%=+votedata_2[i].vote_id%> style="position:relative; color:white">정보 없음</div>
+                                        </div>
                                         <button
                                             onclick=<%="vote_open("+votedata_2[i].vote_id+")"%>
                                             class="btn btn-primary w-100 mb-1">결과</button>
                                             <button
                                             onclick=<%="vote_delete("+votedata_2[i].vote_id+")"%>
-                                            class="btn btn-primary w-100">투표 삭제</button>
+                                            class="btn btn-danger w-100">투표 삭제</button>
                                     </div>
                                     <% if (votedata_2.length> 0) { %>
                                         <div class="line m-0"></div>
@@ -192,14 +211,14 @@
                                 </div>
                             <% } %>
                         </div>
-                        <h6 class="text-center" id="clock"></h6>
                     </div>
                 </div>
             </div>
             <footer class="text-center p-5">
                 <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
                 <div class="mb-5"></div>
-                <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University All Rights Reserved.</p>
+                <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+                <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
             </footer>
         </div>
     </body>
@@ -209,7 +228,70 @@
 
         var input1 = document.createElement('input');
         input1.setAttribute('type', 'hidden');
-        input1.setAttribute('name', 'vote_id'); 
+        input1.setAttribute('name', 'vote_id');
+
+        var isrun = []
+
+        let bar,txt;
+        vote_isrun();
+        vote_per();
+        function back() {
+            if(confirm('로그아웃 하시겠습니까?')) {
+                location.href='/logout'
+            }
+        }
+
+        function vote_isrun() {
+            try {
+                bar = document.getElementsByName('progress');
+                txt = document.getElementsByName('text')
+                bar.forEach(function(obj) {
+                   isrun.push(obj.id)
+                })
+            }
+            catch {
+
+            }
+        }
+
+        function vote_per() {
+            const req=new XMLHttpRequest();
+            req.open('post','/admin/vote/per');
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.onreadystatechange = function() {
+                if(req.status == 200 && req.readyState == 4) {
+                    if (req.response == 'false') {
+                        console.log('error');
+                    }
+                    else {
+                        console.log(new Date())
+                        let data = JSON.parse(req.response);
+                        for (let i = 0; i < data.length; i++) {
+                            for (let j = 0; j < isrun.length; j++) {
+                                if (parseInt(data[i].vote_id) == parseInt(isrun[j])) {
+                                    tmp = Math.round((data[i].total-data[i].done) / data[i].total * 10000) / 100
+                                    bar.forEach(function(obj) {
+                                        if (obj.id == isrun[j]) {
+                                            obj.style.width = tmp+"%";
+                                        }
+                                    });
+                                    txt.forEach(function(obj) {
+                                        if (obj.id == isrun[j]) {
+                                            obj.innerHTML = tmp + "% (" + (data[i].total-data[i].done) + "/" + data[i].total + ")";
+                                            if (tmp > 57.0) {
+                                               obj.style.color = 'white'; 
+                                            }
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            req.send('voterun=-1');
+        }
 
         function func_run() {
             form.appendChild(input1);
@@ -223,6 +305,14 @@
                 input1.setAttribute('value', vote_id);
                 func_run();
             }
+        }
+
+        function vote_edit(vote_id) {
+            //if (confirm('투표를 시작하시겠습니까?')) {
+                form.setAttribute('action', '/admin/vote/edit');
+                input1.setAttribute('value', vote_id);
+                func_run();
+            //}
         }
 
         function vote_delete(vote_id) {
@@ -241,47 +331,12 @@
             }
         }
         function vote_open(vote_id) {
-            if (confirm('결과를 확인하시겠습니까?')) {
+            //if (confirm('결과를 확인하시겠습니까?')) {
                 form.setAttribute('action', '/admin/vote/result');
                 input1.setAttribute('value', vote_id);
                 func_run();
-            }
+            //}
         }
     </script>
-    <script>
-        var clockTarget = document.getElementById("clock");
-        
-        function clock() {
-            var date = new Date();
-            // date Object를 받아오고 
-            var month = date.getMonth();
-            // 달을 받아옵니다 
-            var clockDate = date.getDate();
-            // 몇일인지 받아옵니다 
-            var day = date.getDay();
-            // 요일을 받아옵니다. 
-            var week = ['일', '월', '화', '수', '목', '금', '토'];
-            // 요일은 숫자형태로 리턴되기때문에 미리 배열을 만듭니다. 
-            var hours = date.getHours();
-            // 시간을 받아오고 
-            var minutes = date.getMinutes();
-            // 분도 받아옵니다.
-            var seconds = date.getSeconds();
-            // 초까지 받아온후 
-            clockTarget .innerText = `현재시간 : ${month+1}월 ${clockDate}일 ${week[day]}요일 ` +
-            `${hours < 10 ? `0${hours}` : hours}시 ${minutes < 10 ? `0${minutes }`  : minutes }분 ${seconds < 10 ? `0${seconds }`  : seconds }초`;
-            // 월은 0부터 1월이기때문에 +1일을 해주고 
-            // 시간 분 초는 한자리수이면 시계가 어색해보일까봐 10보다 작으면 앞에0을 붙혀주는 작업을 3항연산으로 했습니다. 
-        }
-    
-        function init() { 
-            clock();
-            // 최초에 함수를 한번 실행시켜주고 
-            setInterval(clock, 1000);
-            // setInterval이라는 함수로 매초마다 실행을 해줍니다.
-            // setInterval은 첫번째 파라메터는 함수이고 두번째는 시간인데 밀리초단위로 받습니다. 1000 = 1초 
-        }
-        init();
-        
-    </script>
+    <script type = "text/javascript" src = "/static/js/clock-interval.js"></script>
 </html>

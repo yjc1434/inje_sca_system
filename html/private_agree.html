@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>인제대학교 동아리연합회</title>
+    <link rel="stylesheet" href="/static/css/inje-settings.css">
+    <script type = "text/javascript" src = "/static/js/inje-script.js"></script>
+</head>
+<body> 
+    <div class="container-fluid px-0">
+        <header class="p-4 mb-4 border-bottom text-center">
+            <a href="/">
+                <img src="/static/resource/sca_system_logo.svg" style="min-height:20px;max-height:50px;" alt="">
+            </a>
+        </header>
+        <div class="container my-5">
+            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <h1 class="text-center mb-4" style="word-break:keep-all">온라인 투표 유의사항 안내</h1>
+                    <div class="line my-3"></div>
+                    <div class="align-items-center">
+                        <h6>부정투표를 방지하기 위하여 투표 진행 시 투표와 관련된 정보가 기록됩니다. 만약 아래 사항을 위반할 경우 관련 법에 따라 조치될 수 있음을 알려드립니다.</h6>
+                        <div>1. 본인 외 다른 사람의 대리 투표를 하지 않는다.<br>2. 본인의 IP와 인증 시 사용한 휴대전화번호를 투표 기록에 남기는 것에 대해 동의한다.<br>3. 전자투표를 진행함에 있어 개인정보(이름,전화번호등)를 활용하는 것에 동의한다.</div>
+                        <h6 class="mt-3">개인정보 수집·이용 동의서</h6>
+                        <textarea class="form-control" rows="4" style ="resize: none;background-color:#fff" readonly>1. 개인정보 수집·이용 목적: 인제대학교 동아리연합회 선거를 위한 본인 확인 및 투표 진행, 투표 결과 확인 및 통계
+2. 개인정보 수집·이용 항목: 성명,학번,핸드폰번호,투표일시,IP주소
+3. 개인정보 보유 및 이용기간: 선거 종료 후 7일 이내 파기
+※ 개인정보 수집·이용 동의를 거부할 권리가 있으나, 거부할 경우 투표 진행이 불가능합니다.</textarea>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" value="" id="checkbox">
+                            <label class="form-check-label" for="checkbox">
+                                '개인정보보호법'에 의거하여 본인의 개인정보를 수집-이용하도록 하는데 동의합니다.
+                            </label>
+                        </div>
+                        <div class="px-1 my-3">
+                            <button class="btn btn-primary w-100 mb-2" onclick="func_isAgree()">동의합니다</button>
+                        </div>
+                    </div>
+                    <h6 class="text-center mb-3" id="clock"></h6>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center p-5">
+            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+            <div class="mb-5"></div>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+            <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+<script type = "text/javascript" src = "/static/js/clock-interval.js"></script>
+<script>
+    let func_isAgree = ()=> {
+        let checkbtn = document.getElementById('checkbox');
+        if (checkbtn.checked == true) {
+            location.href = '/login';
+        }
+        else {
+            alert('개인정보 수집·이용에 동의해야 투표가 진행 가능합니다.')
+        }
+    }
+</script>
+</html>

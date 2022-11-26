@@ -18,12 +18,21 @@
             </a>
         </header>
         <div class="container my-5">
-            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
-                <div class="d-block m-auto">
-                    <h1 class="text-center mb-3">동아리연합회 시스템</h1>
-                    <div class="line my-5"></div>
-                    <div class="row align-items-center password_card">
-
+            <div class="mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto text-center">
+                    <div class="mt-5">
+                        <img src="/static/resource/inje_logo.png" style="width:7rem" alt="">
+                    </div>
+                    <h1 class="text-center mt-3 mb-5" style="word-break: keep-all;">2023학년도 동아리연합회 재선거</h1>
+                    <h1 class="text-center mb-1" style="word-break: keep-all;" id="msg">투표 가능 시간이 아닙니다.</h1>
+                    <div class="text-center" style="word-break: keep-all;">
+                        <p class='votetime' style="word-break: keep-all; margin-bottom: 2.5rem; word-wrap:break-word">투표 가능 시간 : 2022년 11월 24일 목요일 10시 ~ 18시 30분</p>
+                        <h3 class="mt-3 mb-2" style="word-break: keep-all;">동아리연합회 선거관리위원회</h3>
+                        <!-- <div class="mt-3 mb-2">
+                            <img class="vote_logo" src="/static/resource/sca_vote_logo.png">
+                        </div> -->
+                        <p style="font-size: 0.7rem; margin-bottom: 2rem">문의 : 동아리연합회 선거관리위원장 차영준 (010-6636-1434)</p>
+                        <h6 class="text-center my-5" id="clock"></h6>
                     </div>
                 </div>
             </div>
@@ -31,11 +40,15 @@
         <footer class="text-center p-5">
             <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
             <div class="mb-5"></div>
-            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University
-                All Rights Reserved.</p>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+            <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
         </footer>
     </div>
 </body>
 <script>
+    if (new Date() >= new Date('2022-11-24T18:30:00')) { //투표 시간 이후 ~
+        document.getElementById('msg').innerHTML = '<b>투표가 종료되었습니다.</b>'
+     }
 </script>
+<script type = "text/javascript" src = "/static/js/clock-interval.js"></script>
 </html>

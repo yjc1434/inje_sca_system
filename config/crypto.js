@@ -30,5 +30,17 @@ function decrypt(text, key) {
     return decrypted.toString();
 }
 
-module.exports = { decrypt, encrypt, randomKeys };
+function encrypt_pdkdf2(text, salt) { //단방향 암호화
+    crypto.pbkdf2(text, salt, 256, 32, "sha512", function (err,key) {
+        console.log(text, salt)
+        if (err) {
+            console.log(err)
+            return;
+        }
+        let hash = key.toString("base64");
+        console.log(hash);
+    })
+}
+
+module.exports = { decrypt, encrypt, randomKeys, encrypt_pdkdf2 };
 

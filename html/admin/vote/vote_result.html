@@ -12,64 +12,211 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body>
-    <div class="container-fluid px-0">
-        <header class="p-4 mb-4 border-bottom text-center">
-            <a href="/">
-                <img src="/static/resource/sca_system_logo.svg" style="min-height:25px;max-height:50px;" alt="">
-            </a>
-        </header>
-        <div class="container my-5">
-            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+<div class="container-fluid px-0">
+    <header class="p-2 mb-2 border-bottom text-center">
+        <h1 class="text-center mb-1">[투표 결과] <%= data[0].vote_name %></h1>
+    </header>
+    <div id="p1">
+        <div class="container mb-1">
+            <div class="my-3 bg-light rounded-3 vertical-center" style="min-height:500px">
                 <div class="d-block m-auto">
-                    <h1 class="text-center mb-3">투표 결과 - <%= data[0].vote_name %></h1>
-                    <div class="line my-5"></div>
-                    <div class="row align-items-center result_card">
-                        <!-- <div class="card mb-5">
-                            <ul class="list-group list-group-flush text-center">
-                                <li class="list-group-item"><b><%= data[0].vote_name %></b>
-                                </li>
-                                <li class="list-group-item">찬성 : <%= data[0].vote_agree %>
-                                </li>
-                                <li class="list-group-item">반대 : <%= data[0].vote_disagree %>
-                                </li>
-                                <li class="list-group-item">기권 : <%= data[0].vote_none %>
-                                </li>
-                            </ul>
-                        </div> -->
-                        <canvas class="mb-3" id="bar-chart"></canvas>
-                        <h5 class="text-center">찬성 : <%= data[0].vote_agree %><br>반대 : <%= data[0].vote_disagree %><br>기권 : <%= data[0].vote_none %></h5>
-                        <button class="btn btn-gray mt-3" onclick="location.href='/admin/vote'"
+                    <div class="row mt-2" style="width: 1000px;">
+                    <h1 class="text-center mb-3">투표 현황</h1>
+                    <canvas class="mb-3 mx-auto" id="pie-chart" style="max-width: 600px; max-height:600px"></canvas>
+                    </div>
+                    <div class="result_card text-center mb-3">
+                        <button class="btn btn-primary mt-3 w-100" onclick="onclick_next()">결과보기</button>
+                        <button class="btn btn-gray mt-1 w-100" onclick="location.href='/admin/vote'"
                             style="background-color: rgb(223, 223, 223);">메뉴로 돌아가기</button>
                     </div>
                 </div>
             </div>
         </div>
-        <footer class="text-center p-5">
-            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
-            <div class="mb-5"></div>
-            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University
-                All Rights Reserved.</p>
-        </footer>
     </div>
+    <div id="p2" style="display: none;">
+        <div class="container mb-1">
+            <div class="my-3 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <div class="row mt-2" style="width: 1000px;">
+                        <div class="col-4 align-items-center" id="img">
+                            <div style="position: relative; height:100%">
+                                <img class="my-1 m-auto text-center d-block align-items-center" src="/static/vote/<%= data[0].vote_id %>.jpg" onerror="src='/static/vote/none.jpg';" id='pic' style="height: 220px;">
+                                <% let elect = false; %>
+                                <% if (parseInt(data[0].vote_agree) > parseInt(data[0].vote_disagree)) { %>
+                                    <div style="position: absolute; top: 110px; left: 190px">
+                                        <img class="align-items-center" src="/static/resource/win.png" style="height: 140px;">
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col-8 m-auto">
+                            <div class="row text-center mt-3">
+                                <div class="col-12 mb-1"><h1><%= data[0].vote_subject %></h1></div>
+                                <div class="line mb-3"></div>
+                                <div class="col-5 mb-2">
+                                    <div class="row">
+                                        <div class="col-12 pt-3">
+                                            <h4>득표수</h4>
+                                        </div>
+                                        <div class="col-12">
+                                            <h1><b><%= parseInt(data[0].vote_agree)%></b><a style="font-size: 25px;">표</a></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2 mx-auto my-auto">
+                                    <div class="vr" style="border: 1px solid #dadde1; height:80px"></div>
+                                </div>
+                                <div class="col-5 mb-4">
+                                    <div class="row">
+                                        <div class="col-12  pt-3">
+                                            <h4>득표율</h4>
+                                        </div>
+                                        <div class="col-12">
+                                            <% let totl = parseInt(data[0].vote_agree) + parseInt(data[0].vote_disagree) + parseInt(data[0].vote_none) %>
+                                            <h1><b style="color: red;"><%= Math.round(parseInt(data[0].vote_agree)/totl * 10000) / 100 %></b><a style="font-size: 25px;">%</a></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line mb-3 mt-1"></div>
+                    <div>
+                        <h1 class="text-center mb-3">득표 현황</h1>
+                        <canvas class="mb-3" id="bar-chart" style="width: 1000px;"></canvas>
+                    </div>
+                    <div class="result_card text-center mb-3">
+                        <button class="btn btn-primary mt-3 w-100" id="preBtn" onclick="onclick_next()">이전 페이지</button>
+                        <button class="btn btn-gray mt-1 w-100" onclick="location.href='/admin/vote'"
+                            style="background-color: rgb(223, 223, 223);">메뉴로 돌아가기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center p-5">
+        <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+        <div class="mb-5"></div>
+        <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+        <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
+    </footer>
 </body>
 <script>
-    new Chart(document.getElementById("bar-chart"), {
-        type: 'bar',
-        data: {
-          labels: ["찬성", "반대", "기권"],
-          datasets: [{
-            label: "표",
-            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
-            data: [parseInt('<%= data[0].vote_agree %>'),parseInt('<%= data[0].vote_disagree %>'),parseInt('<%= data[0].vote_none %>')]
-          }]
-        },
-        options: {
-        legend: {display : false },
-          title: {
-            display: false,
-            text: '<%= data[0].vote_name %>'
-          }
+    let total = parseInt('<%= data[0].vote_agree %>') + parseInt('<%= data[0].vote_disagree %>') + parseInt('<%= data[0].vote_none %>');
+    let per_agree = Math.round(parseInt('<%= data[0].vote_agree %>')/total * 10000) / 100
+    let per_disagree = Math.round(parseInt('<%= data[0].vote_disagree %>')/total * 10000) / 100
+    let per_none =  Math.round(parseInt('<%= data[0].vote_none %>')/total * 10000) / 100
+
+    vote_per();
+
+    div1 = document.getElementById('p1')
+    div2 = document.getElementById('p2')
+    first = true;
+
+    function onerror() {
+        if(first) {
+            try {
+                if (document.getElementById('pic').src == 'https://vote.inje-club.com/static/vote/none.jpg') {
+                    document.getElementById('img').remove();
+                }
+            }
+            catch {
+                
+            }
         }
-    });
+    }
+    
+    function onclick_next() {
+        window.scrollBy(0,0); 
+        window.scrollTo(0,0);
+        if (div2.style.display == 'none') {
+            div1.style.display = "none"
+            div2.style.display = ""
+            if (first) {
+                onerror();
+                new Chart(document.getElementById("bar-chart"), {
+                    type: 'bar',
+                    data: {
+                      labels: ["찬성\n" + parseInt('<%= data[0].vote_agree %>') + "표(" + per_agree + "%)", "반대\n" + parseInt('<%= data[0].vote_disagree %>') +  "표(" + per_disagree + "%)", "기권\n" + parseInt('<%= data[0].vote_none %>') + "표(" + per_none + "%)"],
+                      datasets: [{
+                        label: "표",
+                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                        data: [parseInt('<%= data[0].vote_agree %>'),parseInt('<%= data[0].vote_disagree %>'),parseInt('<%= data[0].vote_none %>')]
+                      }]
+                    },
+                    options: {
+                        plugins: {
+                            responsive : false,
+                        },
+                        legend: {display : false },
+                        title: {
+                            display: false,
+                            text: '<%= data[0].vote_name %>'
+                        },
+                        scales: {
+                            xAxes: [{
+                                categoryPercentage: 0.4
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    min: 0
+                                }
+                            }]
+                        }
+                    }
+                });
+                first = false;
+            }
+            
+        }
+        else if (div1.style.display == 'none') {
+            div1.style.display = ""
+            div2.style.display = "none"
+        }
+    }
+
+    function vote_per() {
+        const req=new XMLHttpRequest();
+        req.open('post','/admin/vote/per');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        req.onreadystatechange = function() {
+            if(req.status == 200 && req.readyState == 4) {
+                if (req.response == 'false') {
+                    
+                }
+                else {
+                    let data = JSON.parse(req.response)
+                    
+                    let good_vote = Math.round((parseInt(data[0].total) - parseInt(data[0].done)) / parseInt(data[0].total) * 10000) / 100
+                    let bad_vote =  Math.round(parseInt(data[0].done) / parseInt(data[0].total) * 10000) / 100
+
+
+                    if (isNaN(good_vote) || isNaN(bad_vote)) {
+                        onerror();
+                        onclick_next();
+                        document.getElementById('preBtn').style.display = "none";
+                    }
+                    else {
+                        new Chart(document.getElementById("pie-chart"), {
+                            type: 'pie',
+                            data: {
+                              labels: ['투표 ' + (data[0].total - data[0].done) + "명(" + good_vote + "%)",'미투표 ' + data[0].done +  "명(" +  bad_vote + "%)"],
+                              datasets: [{
+                                backgroundColor: ["#3e95cd", "#8e5ea2"],
+                                data: [data[0].total - data[0].done, data[0].done]
+                              }]
+                            },
+                            option: {
+                                plugins: {
+                                    responsive : false,
+                                }
+                            }
+                        });
+                    }  
+                }
+            }
+        }
+        req.send('voterun='+`<%= data[0].vote_id %>`);
+    }
 </script>
 </html>

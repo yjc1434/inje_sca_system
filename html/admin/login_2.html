@@ -11,28 +11,39 @@
     <script type = "text/javascript" src = "/static/js/inje-script.js"></script>
 </head>
 <body> 
-    <div class="d-flex w-100 h-100 p-5">
-        <div class="m-auto align-middle">
-            <div class="text-center">
-                <img src="/static/resource/sca_system_logo.svg" style="max-height:150px;" alt="">
-            </div>
-            <div class="line my-3"></div>
-            <div class="text-center mb-3">
-                <h4>관리자 로그인</h4>
-            </div>
-            <div class="row align-items-center password_card">
-                <div class="col-4 col-md-4 text-center">
-                    <label for="_password" class="col-form-label mb-2 mb-md-3" style="word-break: keep-all;">비밀번호</label>
+    <div class="container-fluid px-0">
+        <header class="p-4 mb-4 border-bottom text-center">
+            <a href="/">
+                <img src="/static/resource/sca_system_logo.svg" style="min-height:25px;max-height:50px;" alt="">
+            </a>
+        </header>
+        <div class="container my-5">
+            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <h1 class="text-center mb-4">관리자 로그인</h1>
+                    <div class="line my-3"></div>
+                    <div class="row align-items-center password_card">
+                        <div class="col-12 col-md-4 text-center">
+                            <label for="_password" class="col-form-label mb-2 mb-md-3">관리자 비밀번호</label>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <input type="password" class="form-control mb-3" id="_password" name="_password" placeholder="비밀번호 입력">
+                        </div>
+                        <div class="col-12">
+                            <button  id='myBtn' onclick="new_check_info()" class="btn btn-primary w-100 mb-3">로그인</button>
+                        </div>
+                        <div class="w-100 mb-3"></div>
+                        <div class="text-center text-danger mb-3 invisible" name="label" style="padding: 0px;">오류메시지 출력란</div>
+                    </div>
                 </div>
-                <div class="col-8 col-md-8">
-                    <input type="password" class="form-control mb-3" id="_password" name="_password" placeholder="비밀번호 입력">
-                </div>
-                <div class="col-12">
-                    <button  id='myBtn' onclick="new_check_info()" class="btn btn-primary w-100 mb-3">로그인</button>
-                </div>
-                <div class="text-center text-danger mt-2 mb-3 invisible" name="label" style="padding: 0px;">오류메시지 출력란</div>
             </div>
         </div>
+        <footer class="text-center p-5" style="background-color:#333;">
+            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+            <div class="mb-5"></div>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+            <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
+        </footer>
     </div>
 </body>
 <script>
@@ -40,7 +51,6 @@
     if(data == 'fail') {        
         document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
         document.getElementsByName('label')[0].innerText = '정보가 일치하지 않습니다!';
-        document.getElementById('_password').value = ""
     }
 
     function new_check_info() {
@@ -52,7 +62,6 @@
                 if (req.response != 'true') {
                     document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
                     document.getElementsByName('label')[0].innerText = '정보가 일치하지 않습니다!';
-                    document.getElementById('_password').value = ""
                 }
                 else {
                     location.href="/admin";

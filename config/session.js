@@ -18,7 +18,9 @@ const sessinOption = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    store: sessionStore
+    store: sessionStore,
+    cookie: { maxAge : 600000 },
+    rolling : true
 }
 
 module.exports = function(app) {

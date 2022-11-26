@@ -92,3 +92,16 @@ function findStudent() {
         form.submit();
     }
 }
+
+function selectBoxChange(target,value) {
+    var val = value;
+    var sel = document.getElementById(target);
+    var opts = sel.options;
+    
+    for (var opt, j = 0; opt = opts[j]; j++) {
+        if (opt.value == val) {
+            sel.selectedIndex = j;
+            break;
+        }
+    }
+}

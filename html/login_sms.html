@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>인제대학교 동아리연합회</title>
+    <link rel="stylesheet" href="/static/css/inje-settings.css">
+    <script type = "text/javascript" src = "/static/js/inje-script.js"></script>
+</head>
+<body> 
+    <div class="container-fluid px-0">
+        <header class="p-4 mb-4 border-bottom text-center">
+            <a href="/">
+                <img src="/static/resource/sca_system_logo.svg" style="min-height:25px;max-height:50px;" alt="">
+            </a>
+        </header>
+        <div class="container my-5">
+            <div class="pp-5 mb-4 bg-light rounded-3 vertical-center" style="min-height:500px">
+                <div class="d-block m-auto">
+                    <h1 class="text-center mb-4">본인 인증</h1>
+                    <div class="text-center mb-3" style="padding: 0px;">사전에 입력된 번호로 인증번호를 전송합니다.</div>
+                    <div class="line my-3"></div>
+                    <div class="row align-items-center password_card">
+                        <div class="col-12 col-md-3 text-start text-md-center">
+                            <label for="_password" id='pw' onchange="check_code()"class="col-form-label mb-2 mb-md-3">인증번호</label>
+                        </div>
+                        <div class="col-8 col-md-6">
+                            <input type="text" class="form-control mb-3" id="_password" name="_password" placeholder="인증번호 입력">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <button id='sendBtn' onclick="send_sms()" class="btn btn-primary w-100 mb-3">재전송</button>
+                        </div>
+                        <div class="col-12">
+                            <button id='myBtn' onclick="check_sms()" class="btn btn-primary w-100 mb-3">확인</button>
+                        </div>
+                        <div class="w-100 mb-3"></div>
+                        <div class="text-center mb-3" name="label" style="padding: 0px;">사전에 입력된 번호로 인증번호를 전송합니다.</div>
+                    </div>
+                    <h6 class="text-center mb-3" id="clock"></h6>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center p-5" style="background-color:#333;">
+            <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
+            <div class="mb-5"></div>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+            <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    document.getElementById('_password').addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          document.getElementById("myBtn").click();
+        }
+      });
+
+    timer_clock = 60
+    function timer() {
+        var clockTarget = document.getElementsByName("label")[0];
+        var innerText = ""
+        if (timer_clock == 0) {
+            innerText = `인증번호가 만료되었습니다.`;
+            const target = document.getElementById('sendBtn');
+            target.disabled = false;
+        }
+        else {
+            innerText = `인증번호 유효시간: ${timer_clock}초`;
+            timer_clock -= 1
+        }
+        clockTarget.innerText = innerText;
+    }
+
+    function send_sms() {
+        const req=new XMLHttpRequest();
+		req.open('post','/auth/studnum/sms/send');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		req.onreadystatechange = function() {
+            if(req.status == 200 && req.readyState == 4) {
+                console.log(req.response);
+                if (req.response == 'false') {
+                    document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+                    document.getElementsByName('label')[0].innerText = '오류가 발생하였습니다!';
+                    document.getElementById('_password').value = "";
+                }
+                if (req.response == 'fast') {
+                    document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+                    document.getElementsByName('label')[0].innerText = '최근에 인증번호를 요청하였습니다.';
+                    document.getElementById('_password').value = "";
+                }
+                else {
+                    const target = document.getElementById('sendBtn');
+                    target.disabled = true;
+                    timer_clock = 60;
+                    timer();
+                    setInterval(timer, 1000);
+                }
+            }
+        }
+		req.send('send=true');
+    }
+
+    function check_sms() {
+        const req=new XMLHttpRequest();
+		req.open('post','/auth/studnum/sms/check');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		req.onreadystatechange = function() {
+            if(req.status == 200 && req.readyState == 4) {
+                if (req.response == 'false') {
+                    document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+                    document.getElementsByName('label')[0].innerText = '인증번호가 일치하지 않습니다!';
+                    document.getElementById('_password').value = "";
+                }
+                else if (req.response == 'timeout') {
+                    document.getElementsByName('label')[0].className = 'text-center text-danger mb-3';
+                    document.getElementsByName('label')[0].innerText = '만료된 인증번호입니다.';
+                    document.getElementById('_password').value = "";
+                }
+                else {
+                    location.href = '/vote';
+                }
+            }
+        }
+		req.send('password='+document.getElementById('_password').value);
+    }
+
+    function check_code() {
+        var target = document.getElementById('pw')
+        const target2 = document.getElementById('myBtn');
+        if (target.value == "") {
+            target2.disabled = true;
+        }
+        else {
+            target2.disabled = false;
+        }
+    }
+    document.getElementById("sendBtn").click();
+</script>
+<script type = "text/javascript" src = "/static/js/clock-interval.js"></script>
+</html>

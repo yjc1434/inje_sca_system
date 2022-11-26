@@ -25,9 +25,9 @@
                     <h1 class="text-center mb-3">메뉴</h1>
                     <div class="line my-5"></div>
                     <div class="row align-items-center menu_card">
-                        <button class="btn btn-primary w-100 mb-1" onclick="location.href='/admin/vote'">투표 관리</button>
-                        <button class="btn btn-primary w-100 mb-1">동아리 회원 검색</button>
-                        <button class="btn btn-primary w-100 mb-1">북마크 확인</button>
+                        <button class="btn btn-primary w-100 mb-1" style="min-width:300px" onclick="location.href='/admin/vote'">투표 관리</button>
+                        <!-- <button class="btn btn-primary w-100 mb-1">동아리 회원 검색</button>
+                        <button class="btn btn-primary w-100 mb-1">북마크 확인</button> -->
                         <button class="btn btn_return w-100 mb-1" onclick="location.href='/logout'">로그아웃</button>
                     </div>
                 </div>
@@ -36,8 +36,8 @@
         <footer class="text-center p-5">
             <img class="logo" src="/static/resource/sca_logo_gray.svg" alt="">
             <div class="mb-5"></div>
-            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호<br>ⓒ2022 INJE University
-                All Rights Reserved.</p>
+            <p class="footer-text">(50834) 경상남도 김해시 인제로 197 늘빛관(학생회관) 323호</p>
+            <p class="footer-text" style="color:#ccc">ⓒ 2022 INJE University All Rights Reserved.</p>
         </footer>
     </div>
 </body>
@@ -47,6 +47,7 @@
         alert('북마크에 학생이 존재하지 않습니다!');
         location.href = '/admin/menu';
     }
+    location.href = '/admin/vote';
 </script>
 
 </html>
